@@ -8,7 +8,7 @@ import pickle
 
 from absl import app
 from absl import flags
-from src.config.named_experiment import get_named_experiment
+from configs.named_experiment import get_named_experiment
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("experiment", None, "Name of the experiment to run")

@@ -23,11 +23,10 @@ import os
 import pandas as pd
 import numpy as np
 
-from src.methods.shared.named_methods import get_named_method
-from src.methods.shared.named_loss import get_named_loss
-from src.methods.shared.utils.postprocess_utils import get_one_diff_couples
-from src.methods.shared.utils.postprocess_utils import perfect_labels, bin_labels, noisy_labels, permuted_labels
-from src.methods.shared.utils.utils import batch
+from src.methods.named_methods import get_named_method
+from src.utils.postprocess_utils import get_one_diff_couples
+from src.utils.postprocess_utils import perfect_labels
+from src.utils.utils import batch
 
 from src.data.get_dataset import get_dataset
 
@@ -160,15 +159,13 @@ def postprocess_model(directory, args):
     torch.manual_seed(args["random_seed"])
     np.random.seed(0)  # init random seed
 
-    # get loss function
-    criterion = get_named_loss(args["loss"])
-
+    args["data_seed"] = 0
 
     train_dataset, args = get_dataset(args)
 
 
     # get model
-    model = get_named_method(args["method"])(**args, criterion=criterion)
+    model = get_named_method(args["method"])(**args)
 
     model.load_state(os.path.join(directory, "model", "checkpoint", "model.pth"))
 
@@ -182,13 +179,20 @@ def postprocess_model(directory, args):
     model.eval()
 
     args["batch_size"] = 16
+
+    # rgbd dataset requires shuffling, the others are already shuffled
+    if "rgbd_objects" in args["dataset"]:
+        shuffle = True
+    else:
+        shuffle = None
+
     # the dataset requires a dataloader
     if args["multithread"]:
 
-        # Dataset class is already shuffling the dataset
-        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=None, num_workers=16, drop_last=False, pin_memory=False)
+        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=shuffle, num_workers=16, drop_last=False, pin_memory=False)
     else:
-        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=None, num_workers=0, drop_last=False, pin_memory=False)
+        # Dataset class is already shuffling the dataset
+        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=shuffle, num_workers=0, drop_last=False, pin_memory=False)
 
     representation_to_save, classes_to_save = get_representation_dataloader(args, train_dl, model, args["factor_idx_process"])
 
@@ -198,8 +202,8 @@ def postprocess_model(directory, args):
     np.savez_compressed(os.path.join(directory, "representations"), **representation_to_save)
 
     # save representation as numpy array and csv file + noise
-    labellers = [perfect_labels, bin_labels, permuted_labels, noisy_labels] #
-    names = args["label_noise"] #["perfect", "bin", "permuted", "noisy"]
+    labellers = [perfect_labels]
+    names = args["label_noise"]
 
 
     # create folder containing the perfected and noisy labels

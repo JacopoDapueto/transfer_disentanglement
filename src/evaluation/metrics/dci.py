@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 import scipy
 from sklearn import ensemble
-from src.methods.shared.metrics.metric import Metric
-from src.methods.shared.utils.metric_utils import split_train_test
+from src.evaluation.metrics.metric import Metric
+from src.utils.metric_utils import split_train_test
 
 
 def completeness_per_factor(importance_matrix):

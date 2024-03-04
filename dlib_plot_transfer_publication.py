@@ -27,8 +27,8 @@ if sys.version_info.major == 3 and sys.version_info.minor >= 10:
 else:
     from collections import MutableMapping
 
-from src.config.named_experiment import get_named_experiment
-from src.methods.shared.utils.visualize_utils import plot_metric_group, plot_metric
+from configs.named_experiment import get_named_experiment
+from src.utils.visualize_utils import plot_metric_group, plot_metric
 
 
 FLAGS = flags.FLAGS
@@ -46,7 +46,6 @@ flags.DEFINE_boolean("before", True, "make plot of before of after transfer")
 hyperparametrs_name = {"ccd":"$\alpha$", "ccd_factors": "$\alpha$", "mig":"mig", "dci-disentanglement":"dci-disentanglement",
                        "beta_vae": "beta_vae_score", "factor_vae":"factor_vae_score", "gbt_regressor": "gbt_regressor",  "gbt_regressor_pruned": "gbt_regressor_pruned",
                        "mlp_regressor": "mlp_regressor", "mlp_regressor_pruned": "mlp_regressor_pruned", "elbo": "ELBO", "reconstruction": "Recons. loss" } # name of hyperparameters of the metrics
-#metric_plot_func = {"ccd": plot_metric, "ccd_factors": plot_metric_group} # kind of plot for each different metric
 
 
 results_list = {"elbo": "ELBO", "reconstruction": "Recons. loss", "gbt_regressor" : "GBT10000"}
@@ -62,9 +61,6 @@ metrics_list = {"beta_vae": "BetaVAE Score",
                 "reconstruction": "Recons. loss" }
 
 
-
-
-
 def get_coolwarm_cmap(N):
 
     coolwarm_cmap = cm.get_cmap('coolwarm', N)
@@ -75,15 +71,10 @@ def get_coolwarm_cmap(N):
 def make_rank_correlation_metrics_plots(data, title, path):
     N = 7
 
-    #data = data.round(2)
-
     metrics = data[metrics_list.keys()]
 
-    #metrics = metrics.round(3)
-
     corr = metrics.corr(method='spearman').loc[ ["elbo", "gbt_regressor", "mlp_regressor", "reconstruction"], ["beta_vae", "factor_vae", "ccd", "dci-disentanglement", "mig"]]
-    #print(corr)
-    #res, pvalue = stats.spearmanr(metrics.values)
+
 
     # Get the coolwarm colormap with N values
     coolwarm_cmap = get_coolwarm_cmap(N)
@@ -119,10 +110,6 @@ def make_metrics_violinplot(df, title, path):
     fig.tight_layout()
     fig.subplots_adjust(top=0.95)
 
-    # sns.despine(fig=None, ax=None, top=False, right=False, left=False, bottom=False, offset=None, trim=False)
-
-    #plt.title(title)
-    #plt.xlabel('Factors')
     plt.ylabel("Disentanglement score")
 
     plt.ylim([-0.0005, 1.005])
@@ -144,10 +131,6 @@ def make_metrics_violinplots_with_examples(df, points, title, path):
     fig.tight_layout()
     fig.subplots_adjust(top=0.95)
 
-    # sns.despine(fig=None, ax=None, top=False, right=False, left=False, bottom=False, offset=None, trim=False)
-
-    # plt.title(title)
-    # plt.xlabel('Factors')
     plt.ylabel("Disentanglement score")
 
     plt.ylim([-0.0005, 1.005])
@@ -168,10 +151,6 @@ def make_downstreamtasks_withpruned_violinplot(df, title, path, x = "regressor")
     fig.tight_layout()
     fig.subplots_adjust(top=0.95)
 
-    # sns.despine(fig=None, ax=None, top=False, right=False, left=False, bottom=False, offset=None, trim=False)
-
-    #plt.title(title)
-    #plt.xlabel('Factors')
     plt.ylabel("Downstream task performances")
 
     plt.ylim([-0.0005, 1.005])
@@ -196,10 +175,7 @@ def make_downstreamtasks_fovs_withpruned_violinplot(df, title, path):
     fig.tight_layout()
     fig.subplots_adjust(top=0.95)
 
-    # sns.despine(fig=None, ax=None, top=False, right=False, left=False, bottom=False, offset=None, trim=False)
 
-    #plt.title(title)
-    #plt.xlabel('Factors')
     plt.ylabel("Downstream task performances")
 
     plt.ylim([-0.0005, 1.005])
@@ -230,10 +206,6 @@ def make_transfer_score_violinplot(df, title, path):
 
     plt.ylim([-0.0005, 1.005])
 
-    # sns.despine(fig=None, ax=None, top=False, right=False, left=False, bottom=False, offset=None, trim=False)
-
-    # plt.title(title)
-    #plt.xlabel('Factors')
     plt.ylabel("Downstream task performances")
 
     # saving loss plot
@@ -266,7 +238,6 @@ def aggregate_models(data):
 
     metrics_dict = {}
     for key, value in data:
-        #print(key)
 
         info_list = list(value)
         # aggregate results
@@ -274,7 +245,6 @@ def aggregate_models(data):
             metrics = info["metrics"]
 
             flatten_dict = flatten(metrics)
-            #specs, results = flatten_dict.keys(), flatten_dict
 
             # for each (metric, hyperparameter)
             for spec, result in flatten_dict.items():
@@ -298,7 +268,6 @@ def aggregate_metrics(data):
 
     aggregated_dict = {}
     for key, v in groupby_data:
-        #print(key, list(v))
         aggregated_dict[key]  = {}
         v = list(v)
 
@@ -334,8 +303,6 @@ def plots(output_directory, alpha=0.0, gamma=False):
         raise FileExistsError("Experiment folder does not exist")
 
 
-
-
     # make plot directory
     plot_dir = os.path.join(output_directory, "plot")
     if not os.path.exists(plot_dir):
@@ -360,17 +327,12 @@ def plots(output_directory, alpha=0.0, gamma=False):
         results = pickle.load(f)
 
 
-
-
-    experiment = get_named_experiment(FLAGS.experiment)
-
     print("Aggregate wrt ", FLAGS.values_to_aggregate)
 
     for model_num, info in results.items():
         info["model_num"] = model_num
 
     result_list = [ info for model_num, info in results.items()]
-    #print(result_list)
 
     # aggregated wrt experiments info
     partial_key_func = itemgetter(*FLAGS.values_to_aggregate)
@@ -378,7 +340,6 @@ def plots(output_directory, alpha=0.0, gamma=False):
 
     # group according to keys
     metrics = aggregate_models(groupby(aggregated, partial_key_func))
-
 
     # group same aggregator, same spec
     for spec, values in metrics.items():
@@ -390,8 +351,6 @@ def plots(output_directory, alpha=0.0, gamma=False):
             os.makedirs(metric_plot_dir)
 
         metric = [ s for s in spec if s in hyperparametrs_name.keys()][0]
-        hyper_name  = hyperparametrs_name[metric]
-        #plot_func = metric_plot_func[metric]
 
         ##### prepare data for correlation rank #####
         if metric in loss_metrics_rank_dict.keys() or metric=="mlp_regressor_pruned" or metric=="gbt_regressor_pruned":
@@ -400,7 +359,6 @@ def plots(output_directory, alpha=0.0, gamma=False):
                     loss_metrics_rank_dict[metric] = [v[0] for k, v in values.items()]
 
                     # for each fov repeat the score metric
-                    #for k, v in values.items():
                     for _ in ["mlp", "gbt"]:
                         for _ in ["pruned", "not"]:
                             for _ in range(len(FLAGS.fov_names)) :
@@ -496,7 +454,6 @@ def plots(output_directory, alpha=0.0, gamma=False):
 
         metric = metric[0]
         hyper_name  = hyperparametrs_name[metric]
-        #plot_func = metric_plot_func[metric]
 
         # set common visualize parameters
         visualize_params = { "aggregated_data": values, "group":values.keys(), "title": "{}".format(spec), "set_lim": False}
@@ -545,12 +502,6 @@ def plots(output_directory, alpha=0.0, gamma=False):
                                                os.path.join(alpha_dir, "downstream_task_gbt_fov_violinplots.png"))
 
     make_transfer_score_violinplot(gbt_df, "", os.path.join(alpha_dir, "transferscore_gbt_fov_violinplots.png"))
-
-    #df_comparison_downstream_task_violinplot = pd.DataFrame.from_dict(comparison_downstream_task_nocolor_violinplot_dict)
-    #make_downstreamtasks_withpruned_violinplot(df_comparison_downstream_task_violinplot, "",
-    #                                           os.path.join(output_directory,
-    #                                                        "downstream_task_withpruned_nocolor_violinplots.png"))
-
 
 
     ###################
@@ -622,15 +573,6 @@ def plots(output_directory, alpha=0.0, gamma=False):
     beta2_metrics_violinplot = pd.DataFrame.from_dict(beta2_metrics_violinplot_dict)
     make_metrics_violinplot(beta2_metrics_violinplot, "",
                             os.path.join(alpha_dir, "metrics_violinplots_beta2.png"))
-
-    #points = df_metrics_violinplot.iloc[[0, 2, 3, 6, 14, 11, 19]]
-    #make_metrics_violinplots_with_examples(df_metrics_violinplot, points, "",os.path.join(output_directory, "metrics_violinplots_with_examples.png"))
-
-
-    #df_downstream_task_violinplot = pd.DataFrame.from_dict(downstream_task_violinplot_dict)
-    #make_metrics_violinplot(df_downstream_task_violinplot, "", os.path.join(output_directory, "downstream_task_violinplots.png"))
-
-
 
 
 def get_output_directory(FLAGS):

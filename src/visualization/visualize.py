@@ -16,112 +16,10 @@ torch.cuda.set_device(device)
 torch.backends.cudnn.benchmark = True
 torch.cuda.empty_cache()
 
-from src.methods.shared.named_methods import get_named_method
-from src.methods.shared.named_loss import get_named_loss
-
-from src.methods.shared.utils.utils import batch
-
-from src.methods.shared.utils.visualize_utils import *
+from src.methods.named_methods import get_named_method
+from src.utils.visualize_utils import *
 from src.data.get_dataset import get_dataset
 
-
-def representation_rank(template, representations, k=10):
-    """Return k most similar representations idexes similar to template"""
-
-    distances = np.absolute(representations - template)
-    sorted_idx = np.argsort(distances)[:k] # descending order, first k
-    return sorted_idx
-
-
-def rank_each_dimensions(template, to_rank, k=11):
-
-    rank = []
-
-    for j in range(template.shape[0]):
-        j_rank = representation_rank(template[j], to_rank[:, j], k=k)
-        rank.append(j_rank)
-
-    return  rank
-
-
-def rank_entire_dataset( args, templates, train_dl, model, k=11):
-    # iterate over the entire dataset and return k-nerest image per template (for each mode)
-    top_k_representation = {mode: { i: None for i, _ in enumerate(templates)} for mode in args["mode"]}
-
-    top_k = {mode: { i: None for i, _ in enumerate(templates)} for mode in args["mode"]} # the top k for each mode and template
-
-
-    # compute representation
-    template_representations = model.encode(templates)
-
-    # iterate over the dataset, with sampling
-    for idx in batch(range(train_dl.num_images()), args["batch_size"]):
-
-        images, _ = train_dl.get_images(idx)
-
-        # move data to GPU
-        images = images.to(device)
-
-        dict_representation = model.encode(images)
-
-        # update representation list
-        for mode in args["mode"]:
-            representations = dict_representation[mode].cpu().detach().numpy()
-            template_representations_mode = template_representations[mode].cpu().detach().numpy()
-            print(template_representations_mode.shape)
-            top_k_mode = top_k[mode]
-            for i, template in enumerate(template_representations_mode):
-                top_k_mode_template = top_k_mode[i]
-
-                # create empty rank
-                if top_k_mode_template is not None:
-                    top_k_mode_template = train_dl.get_images(idx)
-                    #top_k[mode][i] = [[] for j in range(template.shape[0]) ]
-
-                representations_to_rank = representations if top_k_mode_template is None else np.vstack((top_k_mode_template, representations))
-
-                rank_dim = rank_each_dimensions(template, representations_to_rank, k=k)
-
-                #top_k_representation
-                top_k[mode][i] = [ idx[dim] for dim in rank_dim]
-
-    return top_k
-
-def save_k_similarity_mode(directory, mode, templates, rank, train_dl):
-    results_dir = os.path.join(directory, "template_similarity", mode)
-
-    if not os.path.exists(results_dir):
-        # if the demo_folder directory is not present then create it.
-        os.makedirs(results_dir)
-
-    # sample random images
-    rank_mode = rank[mode]
-
-    for i, template in enumerate(templates):
-
-        template_representation = representations[i]
-
-        for j in range(template_representation.shape[0]):
-            # exclude template
-            j_representations = np.vstack((representations[:i], representations[i + 1:]))
-            j_rank = representation_rank(template_representation[j], j_representations[:, j], k=k)
-            rank.append(images[j_rank, ...])
-
-        rank = np.moveaxis(np.array(rank), 2, -1)
-        template = np.moveaxis(template, 0, -1)
-
-        save_rank(template, rank, os.path.join(results_dir, "rank_{}.jpg".format(i)))
-
-
-def save_k_similarity(args, directory, train_dl, model, n_templates=10, k=11):
-    # sample random images
-    idx = np.random.choice(range(train_dl.num_images()), size=n_templates)
-    templates, _ = train_dl.get_images(idx)
-
-    rank_modes = rank_entire_dataset(args, templates, train_dl, model, k)
-    for mode in args["mode"]:
-        rank = rank_modes[mode]
-        save_k_similarity_mode(directory, mode, templates, rank, train_dl)
 
 
 def save_random_samples(directory, random_samples):
@@ -170,17 +68,7 @@ def save_reconstruction(directory, images, reconstruction):
     grid_save_images(paired_pics, os.path.join(results_dir, "reconstruction.jpg"))
 
 
-def save_pairwise_representations():
-    pass
-
-
-
 def save_loss_plot(directory):
-    '''
-
-    :param directory:
-    :return:
-    '''
 
 
     files = []
@@ -244,16 +132,13 @@ def create_visualization_directory(directory):
 
 
 def visualize_model(directory, args):
-    '''
 
-    :param directory:
-    :param args:
-    :return:
-    '''
 
     # set fixed seed
     torch.manual_seed(args["random_seed"])
     np.random.seed(0)  # init random seed
+
+    args["data_seed"] = 0
 
     # create the folder devoted to the postprocessing
     old_directory = directory
@@ -263,12 +148,11 @@ def visualize_model(directory, args):
     save_loss_plot(old_directory)
 
     # get loss function
-    criterion = get_named_loss(args["loss"])
 
     train_dataset, args = get_dataset(args)
 
     # get model
-    model = get_named_method(args["method"])(**args, criterion=criterion)
+    model = get_named_method(args["method"])(**args)
 
 
     # load pretrained weights
@@ -281,18 +165,23 @@ def visualize_model(directory, args):
     print("===============START VISUALIZATIONS===============")
 
     num_random_samples = 16
-    num_animations = 5
-    num_templates = 10
+
     args["batch_size"] = 16
 
+    # rgbd dataset requires shuffling, the others are already shuffled
+    if "rgbd_objects" in args["dataset"]:
+        shuffle = True
+    else:
+        shuffle = None
+
     with torch.no_grad():
-        # the dataset requires a dataloader
+        # Dataset already shuffled at runtime
         if args["multithread"]:
-            train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=False, num_workers=8, drop_last=False, pin_memory=False)
+            train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=shuffle, num_workers=8, drop_last=False, pin_memory=False)
 
         else:
             # save one batch
-            train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=False, num_workers=0, drop_last=False, pin_memory=False)
+            train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=shuffle, num_workers=0, drop_last=False, pin_memory=False)
 
         data_iter = iter(train_dl)
         images_reconstruction, _ = next(data_iter)
@@ -319,8 +208,6 @@ def visualize_model(directory, args):
         for mode in args["mode"]:
             save_traversal(directory, mode, dict_representation[mode], model)
 
-    # image similarity wrt a dimension
-    #save_k_similarity(args, directory, train_dl, model, num_templates)
 
 
     print("===============END VISUALIZATIONS===============")

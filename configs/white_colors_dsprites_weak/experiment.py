@@ -21,8 +21,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import src.config.hyperparameters as h
-from src.config.experiment import Experiment
+import configs.hyperparameters as h
+from configs.experiment import Experiment
 
 
 def get_datasets():
@@ -71,7 +71,7 @@ def get_config():
     scheduler = h.fixed("scheduler_name", "reduceonplateau")
 
     wd = h.fixed("wd", 0.0)  # 1e-11
-    epochs = h.fixed("iterations", 300000) # 300000
+    epochs = h.fixed("iterations", 400000)
     loss = h.fixed("loss", "mse")
     factors_idx = h.fixed("factor_idx", list(range(0, 6)))  # consider all the factors
     k = h.fixed("k", 1)

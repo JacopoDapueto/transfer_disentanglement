@@ -11,9 +11,8 @@ import pickle
 
 import numpy as np
 import torch
-from src.methods.shared.named_loss import get_named_loss
-from src.methods.shared.named_methods import get_named_method
-from src.methods.shared.named_metric import get_named_metric
+from src.methods.named_methods import get_named_method
+from src.evaluation.metrics.named_metric import get_named_metric
 from torch.utils.data import DataLoader
 
 from src.data.get_dataset import get_dataset
@@ -34,9 +33,9 @@ def compute_loss(directory, args ):
 
     random_state = np.random.RandomState(args["random_seed"])
     data_seed = random_state.randint(2 ** 31)
+    args["data_seed"] = data_seed
 
     # get loss function
-    criterion = get_named_loss(args["loss"])
 
     # load entire dataset since the task is to learn a representation
     train_dl, args = get_dataset(args)
@@ -44,6 +43,7 @@ def compute_loss(directory, args ):
     if args["batch_size"] > 8:
         args["batch_size"] = 8
 
+    # dataset already shuffled at runtime
     if args["multithread"]:
 
         train_dl = DataLoader(train_dl, batch_size=args["batch_size"], shuffle=False, num_workers=16, drop_last=False, pin_memory=False)
@@ -56,7 +56,7 @@ def compute_loss(directory, args ):
     args["repetitions"] = 1024
 
     # get model
-    model = get_named_method(args["method"])(**args, criterion=criterion)
+    model = get_named_method(args["method"])(**args)
     model.load_state(os.path.join(directory, "checkpoint", "model.pth"))
 
     # move model to gpu
@@ -85,6 +85,8 @@ def compute_loss(directory, args ):
         elbo_list.append(loss["elbo"].item())
         reconstruction_list.append((loss["reconstruction"].item()))
 
+    print("===============END EVALUATION ELBO===============")
+
     scores = {}
     scores["elbo"] = np.mean(elbo_list)
     scores["reconstruction"] =  np.mean(reconstruction_list)
@@ -101,8 +103,6 @@ def create_evaluation_directory(directory):
     if not os.path.exists(process_dir):
         # if the demo_folder directory is not present then create it.
         os.makedirs(process_dir)
-    #else:
-        #raise FileExistsError("Evaluation folder exists")
 
     return process_dir
 

@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import mutual_info_score
 
-from src.methods.shared.metrics.metric import Metric
+from src.evaluation.metrics.metric import Metric
 
 
 def histogram_discretizer(x, num_bins=20):
@@ -37,7 +37,7 @@ def discrete_mutual_info(x, y):
 
 
 def discrete_mig(representation, gt_factors):
-    """Computes score on test data."""
+    """Computes score on test_unsupervised data."""
 
     discretized_rep = histogram_discretizer(representation)
     dmi = discrete_mutual_info(discretized_rep, gt_factors)

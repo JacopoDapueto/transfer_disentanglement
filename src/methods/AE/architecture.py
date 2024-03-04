@@ -10,7 +10,7 @@ from __future__ import print_function
 import numpy as np
 import torch
 import torch.nn.functional as F
-from src.methods.shared.baseline_model import Baseline
+from src.methods.baseline_model import Baseline
 from torch import nn
 
 
@@ -32,7 +32,6 @@ class Encoder(nn.Module):
         x = self.pool(x)
         x = F.leaky_relu(self.conv1_2(x))
         x = self.pool(x)
-        #print(x.size())
         x = self.flatten(x)
 
         x = self.linear(x)
@@ -67,8 +66,8 @@ class Decoder(nn.Module):
 
 class AE(Baseline):
 
-    def __init__(self, data_shape, latent_dim, n_channel, criterion, **kwargs):
-        super(AE, self).__init__(criterion)
+    def __init__(self, data_shape, latent_dim, n_channel, **kwargs):
+        super(AE, self).__init__(**kwargs)
 
         self.encoder = Encoder(latent_dim, n_channel)
         self.decoder = Decoder(data_shape,  latent_dim, n_channel)
@@ -96,7 +95,7 @@ class AE(Baseline):
 
 
     def sample(self, num=25):
-        # mean and variance of latent code (better to estimate them with a test set)
+        # mean and variance of latent code (better to estimate them with a test_unsupervised set)
         mean = 0.
         std = 1.
 
@@ -122,7 +121,6 @@ class AE(Baseline):
             'encoder_state_dict': self.encoder.state_dict(),
             'decoder_state_dict': self.decoder.state_dict(),
             'optimizer_state_dict': self._optimizer.state_dict(),
-            'loss': self._criterion,
         }, path)
 
     def load_state(self, path):
@@ -137,5 +135,4 @@ class AE(Baseline):
         if self._optimizer is not None:
             self._optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 
-        self._criterion = checkpoint['loss']
 

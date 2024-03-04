@@ -6,16 +6,10 @@ from __future__ import print_function
 
 import torch
 from torch import nn
-from torchsummary import summary
 
 from src.methods.VAE.architecture import VAE
 
-# CUDA for PyTorch
-use_cuda = torch.cuda.is_available()
-device = torch.device("cuda:0" if use_cuda else "cpu")
-torch.cuda.set_device(device)
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
+
 
 
 class View(nn.Module):
@@ -63,8 +57,8 @@ class NormalizeTanh(nn.Module):
 
 class EFFICIENTVAE(VAE):
 
-    def __init__(self,  n_filters, decoder_distribution,  beta, data_shape, latent_dim, n_channel, criterion, **kwargs):
-        super(EFFICIENTVAE, self).__init__(  n_filters, decoder_distribution,  beta, data_shape, latent_dim, n_channel, criterion, **kwargs)
+    def __init__(self,  n_filters, decoder_distribution,  beta, data_shape, latent_dim, n_channel, **kwargs):
+        super(EFFICIENTVAE, self).__init__(  n_filters, decoder_distribution,  beta, data_shape, latent_dim, n_channel, **kwargs)
 
         # encoded feature's size and volume
         self.feature_size = data_shape[0] // 8
@@ -100,7 +94,7 @@ class EFFICIENTVAE(VAE):
         self.fc_mu = self._linear(self.feature_volume, latent_dim, relu=False)
         self.fc_var = self._linear(self.feature_volume, latent_dim, relu=False)
 
-        # for the gaussian likelihoo+d
+        # for the gaussian likelihood
         self.log_scale = nn.Parameter(torch.Tensor([0.0]))
         self.one = torch.Tensor([1.])
 
@@ -133,7 +127,6 @@ class EFFICIENTVAE(VAE):
                 channel_num, kernel_num,
                 kernel_size=4, stride=2, padding=1,
             ),
-            #nn.BatchNorm2d(kernel_num),
             nn.LeakyReLU(0.02),
         )
 
@@ -146,26 +139,3 @@ class EFFICIENTVAE(VAE):
 
 
 
-
-
-if __name__ == "__main__":
-    args = {'dataset': 'coil100_augmented', 'decoder_distribution': 'gaussian', 'batch_size': 64, 'lr': 0.0001,
-            'wd': 0.0,
-            'epochs': 17, 'loss': 'mse', 'factor_idx': [0, 1, 2, 3], 'method': 'EFFICIENTWEAKVAE', 'beta': 2.0, 'n_filters': 64,
-            'latent_dim': 30, 'random_seed': 3, 'aggregator': 'labels', 'k': 1, "data_shape": [128, 128],
-            "n_channel": 3, "warm_up_iterations": 0}
-
-    model = EFFICIENTVAE(**args, criterion=nn.MSELoss(reduction='sum')).to(device)
-    print("Number of parameters of the model: {:,}".format(model.num_params()))
-
-    input = torch.randn([64, 1, 128, 128])
-    summary(model, (3, 128, 128))
-
-
-    #out = model.encoder(input)
-
-    #print(out.size())
-
-    #input = torch.randn([64, args["latent_dim"]])
-
-    #out = model.decoder(input)

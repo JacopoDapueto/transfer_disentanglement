@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 from sklearn import ensemble
 from sklearn.neural_network import MLPClassifier
-from src.methods.shared.metrics.metric import Metric
-from src.methods.shared.utils.metric_utils import split_train_test
+from src.evaluation.metrics.metric import Metric
+from src.utils.metric_utils import split_train_test
 
 
 def make_predictor(name):
@@ -21,7 +21,7 @@ def make_predictor(name):
 
 
 def _compute_loss(x_train, y_train, x_test, y_test, predictor):
-  """Compute average accuracy for train and test set."""
+  """Compute average accuracy for train and test_unsupervised set."""
   num_factors = y_train.shape[0]
   train_loss = []
   test_loss = []

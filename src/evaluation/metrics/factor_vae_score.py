@@ -7,8 +7,8 @@ Based on "Isolating Sources of Disentanglement in Variational Autoencoders"
 import numpy as np
 import pandas as pd
 
-from src.methods.shared.metrics.metric import Metric
-from src.methods.shared.utils.metric_utils import split_train_test
+from src.evaluation.metrics.metric import Metric
+from src.utils.metric_utils import split_train_test
 
 
 def _prune_dims(variances, threshold=0.05):

@@ -23,18 +23,8 @@ import pickle
 import numpy as np
 from torch.utils.data import DataLoader
 
-'''
-if sys.platform == "linux" or sys.platform == "linux2":
-    #import bitsandbytes.optim.Adam8bit as AdamW
-    import torch.optim.AdamW as AdamW
-elif sys.platform == "darwin":
-    #import bitsandbytes.optim.Adam8bit as AdamW
-    import torch.optim.AdamW as AdamW
-elif sys.platform == "win32":
-    import torch.optim.AdamW as AdamW
-'''
-from src.methods.shared.named_methods import get_named_method
-from src.methods.shared.named_loss import get_named_loss
+
+from src.methods.named_methods import get_named_method
 from src.data.weakly_supervised_data import WeaklySupervisedData
 
 
@@ -78,7 +68,6 @@ def train_model(directory, args):
     else:
         directory = create_model_directory(directory)
 
-    criterion = get_named_loss(args["loss"])
     optimizer = torch.optim.Adam
 
     # load entire dataset since the task is to learn a representation
@@ -89,7 +78,7 @@ def train_model(directory, args):
     args["data_shape"] = train_dataset.get_shape()
 
     # get model
-    model = get_named_method(args["method"])(**args, criterion=criterion)
+    model = get_named_method(args["method"])(**args)
 
     model.build_model(optimizer, **args)
 
@@ -106,12 +95,13 @@ def train_model(directory, args):
     # min loss
     best_loss = np.inf
 
-    save_interval = 10000  # Save model every 10,000 iterations
+    save_interval = args["save_interval"]  # Save model every 10,000 iterations
     n_accumulation = args["grad_acc_steps"]  # steps for gradient accumulation
     total_iterations = args["iterations"] * n_accumulation # count n_accumulations as one iteration
 
+    # Dataset class is already shuffling the data
     if args["multithread"]:
-        # Dataset class is already shuffling the dataset
+
         train_dl = DataLoader(train_dataset, batch_size=args["batch_size"]//n_accumulation, shuffle=None, num_workers=16, drop_last=False, pin_memory=True)
 
         print("Using Dataloader multithreading!")

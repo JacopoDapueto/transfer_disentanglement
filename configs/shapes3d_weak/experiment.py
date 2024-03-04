@@ -21,8 +21,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import src.config.hyperparameters as h
-from src.config.experiment import Experiment
+import configs.hyperparameters as h
+from configs.experiment import Experiment
 
 
 def get_datasets():
@@ -51,7 +51,7 @@ def get_seeds(num):
 
 def get_default_models():
     # BetaVAE config.
-    model_name = h.fixed("method", "EFFICIENTVAE")
+    model_name = h.fixed("method", "EFFICIENTWEAKVAE")
     filters = h.fixed("n_filters", 128)
     betas = h.sweep("beta", h.discrete([1., 2.]))
 
@@ -69,10 +69,9 @@ def get_config():
     batch_size = h.fixed("batch_size", 64)
     lr = h.fixed("lr", 0.0001)
 
-    wd = h.fixed("wd", 0.0)  # 1e-11
-    #epochs = h.fixed("epochs", 26) # 26
+    wd = h.fixed("wd", 0.0)
 
-    epochs = h.fixed("iterations", 50000) # 300000
+    epochs = h.fixed("iterations", 400000)
 
     scheduler = h.fixed("scheduler_name", "reduceonplateau")
     loss = h.fixed("loss", "mse")

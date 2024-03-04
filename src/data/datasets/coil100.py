@@ -7,12 +7,9 @@ import os
 import cv2
 import numpy as np
 import pandas as pd
-import h5py
 
 import torch
-from torchvision.io import read_image
 
-import torch.utils.data as data
 import copy
 
 
@@ -22,12 +19,12 @@ from src.data import utils
 
 
 COIL100AUGMENTED_PATH = os.path.join(
-    os.environ.get("DISENTANGLEMENT_LIB_DATA", ""), "coil-100",
+    os.environ.get("DISENTANGLEMENT_TRANSFER_DATA", ""), "coil-100",
     "coil-100-augmented")
 
 
 COIL100AUGMENTEDBINARY_PATH = os.path.join(
-    os.environ.get("DISENTANGLEMENT_LIB_DATA", ""), "coil-100",
+    os.environ.get("DISENTANGLEMENT_TRANSFER_DATA", ""), "coil-100",
     "coil-100-augmented-binary")
 
 
@@ -65,7 +62,7 @@ class Coil100Augmented(FactorData):
 
         classes_file = pd.read_csv(os.path.join(COIL100AUGMENTED_PATH, "classes.csv"))
         self.images = classes_file["image"]
-        self.factor_sizes = np.array([100, 72, 18, 9], dtype=np.int64) # np.array([100, 72, 18, 9], dtype=np.int64)
+        self.factor_sizes = np.array([100, 72, 18, 9], dtype=np.int64)
         self.factor_names = [list(classes_file.columns[1:])[i] for i in self.latent_factor_indices]  # name of the factors
         self.latents_classes = np.array(classes_file.loc[:, classes_file.columns != 'image'].values)
 
@@ -149,9 +146,6 @@ class Coil100Augmented(FactorData):
 
         classes = classes[np.newaxis, ...]
 
-        # find factors from index
-        #factors = utils.index_to_factor(index, self.factor_sizes[::-1], self.batch_size)
-
         return torch.from_numpy(classes), batch_imgs, torch.from_numpy(classes)
 
     def _sample_factor(self, i):
@@ -175,7 +169,6 @@ class Coil100AugmentedBinary(Coil100Augmented):
 
     def __init__(self, latent_factor_indices=None, batch_size=64, random_state=0, resize=None, center_crop=None, **kwargs):
         # By default, all factors are considered ground truth
-        # factors.
 
         super(Coil100AugmentedBinary, self).__init__(latent_factor_indices, batch_size, random_state)
 
@@ -195,7 +188,7 @@ class Coil100AugmentedBinary(Coil100Augmented):
 
         classes_file = pd.read_csv(os.path.join(COIL100AUGMENTEDBINARY_PATH, "classes.csv"))
         self.images = classes_file["image"]
-        self.factor_sizes = np.array([100, 72, 18, 9], dtype=np.int64)  # np.array([100, 72, 18, 9], dtype=np.int64)
+        self.factor_sizes = np.array([100, 72, 18, 9], dtype=np.int64)
         self.factor_names = [list(classes_file.columns[1:])[i] for i in
                              self.latent_factor_indices]  # name of the factors
         self.latents_classes = np.array(classes_file.loc[:, classes_file.columns != 'image'].values)
@@ -242,18 +235,5 @@ class Coil100AugmentedBinary(Coil100Augmented):
 
         classes = classes[np.newaxis, ...]
 
-        # find factors from index
-        factors = utils.index_to_factor(index, self.factor_sizes[::-1], self.batch_size)
-
         return torch.from_numpy(classes), batch_imgs, torch.from_numpy(classes)
-
-
-
-
-if __name__ == "__main__":
-    dataset = Coil100Augmented()
-
-    for i in range(5):
-
-        img, label = dataset[i]
 

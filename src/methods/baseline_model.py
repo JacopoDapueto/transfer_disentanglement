@@ -9,11 +9,10 @@ from torch import nn
 class Baseline(nn.Module):
     """Abstract class for model."""
 
-    def __init__(self, criterion, **kwargs):
+    def __init__(self, **kwargs):
 
         super(Baseline, self).__init__()
 
-        self._criterion = criterion
         self._optimizer = None
 
     # move to device

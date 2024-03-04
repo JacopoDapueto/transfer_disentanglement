@@ -21,8 +21,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import src.config.hyperparameters as h
-from src.config.experiment import Experiment
+import configs.hyperparameters as h
+from configs.experiment import Experiment
 
 
 def get_datasets():
@@ -56,7 +56,7 @@ def get_default_models():
 
     betas = h.sweep("beta", h.discrete([1., 2.]))
 
-    warm_up = h.fixed("warm_up_iterations", 50000)
+    warm_up = h.fixed("warm_up_iterations", 0)
 
     config_beta_vae = h.zipit([model_name, betas,filters, warm_up])
 
@@ -73,7 +73,7 @@ def get_config():
 
     wd = h.fixed("wd", 0.0)  # 1e-11
 
-    epochs = h.fixed("iterations", 1000) # 26
+    epochs = h.fixed("iterations", 50000)
 
     loss = h.fixed("loss", "mse")
     factors_idx = h.fixed("factor_idx", list(range(0, 6)))  # consider all the factors

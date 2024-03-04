@@ -21,8 +21,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import src.config.hyperparameters as h
-from src.config.experiment import Experiment
+import configs.hyperparameters as h
+from configs.experiment import Experiment
 
 
 def get_datasets():

@@ -9,16 +9,18 @@ import shutil
 
 from absl import app
 from absl import flags
-from src.config.named_experiment import get_named_experiment
-from src.methods.shared.evaluation.eval_representation import evaluation_model
-from src.methods.shared.postprocessing.postprocess import postprocess_model
-from src.methods.shared.traininig.experimental.fine_tune import train_model
-from src.methods.shared.visualization.simple_visualize import visualize_model as simple_visualize_model
-from src.methods.shared.visualization.visualize import visualize_model
+
+from configs.named_experiment import get_named_experiment
+from src.evaluation.eval_representation import evaluation_model
+from src.postprocessing.postprocess import postprocess_model
+from src.traininig.fine_tune import train_model
+from src.visualization.simple_visualize import visualize_model as simple_visualize_model
+from src.visualization.visualize import visualize_model
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("experiment", None, "Name of the experiment to run")
 flags.DEFINE_string("input_experiment", None, "Name of the experiment model to transfer from")
+flags.DEFINE_integer("save_interval", 10000, "Number of iterations after which save the model")
 
 flags.DEFINE_string("model_num", None, "Directory to save trained model in")
 flags.DEFINE_boolean("overwrite", False, "Whether to overwrite output directory.")
@@ -140,6 +142,7 @@ def main(unused_args):
     # train model
     train_config = experiment.get_model_config(model_num=int(FLAGS.model_num))
     train_config["grad_acc_steps"] = FLAGS.grad_acc_steps  # gradient accumulation parameter
+    train_config["save_interval"] = FLAGS.save_interval  # save model interval parameter
     train_config["model_num"] = FLAGS.model_num
 
     train_config.update(experiment.get_postprocess_config())

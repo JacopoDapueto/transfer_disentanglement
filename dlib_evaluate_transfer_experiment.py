@@ -8,10 +8,10 @@ import pickle
 
 from absl import app
 from absl import flags
-from src.config.named_experiment import get_named_experiment
-from src.methods.shared.evaluation.eval_representation import evaluation_model
-from src.methods.shared.postprocessing.postprocess import postprocess_model
-from src.methods.shared.visualization.visualize import visualize_model
+from configs.named_experiment import get_named_experiment
+from src.evaluation.eval_representation import evaluation_model
+from src.postprocessing.postprocess import postprocess_model
+from src.visualization.visualize import visualize_model
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("experiment", None, "Name of the experiment to run")

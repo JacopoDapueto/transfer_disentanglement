@@ -1,4 +1,4 @@
-# transfer_disentanglement
+# Transfer disentanglement
 
 ## Install
 
@@ -7,3 +7,4 @@
 ## How to custom
 
 ## Citation
+

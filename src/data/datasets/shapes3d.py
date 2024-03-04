@@ -16,7 +16,7 @@ from src.data.factor_data_class import FactorData
 from src.data.utils import set_transform
 
 SHAPES3D_PATH = os.path.join(
-    os.environ.get("DISENTANGLEMENT_LIB_DATA", ""), "3dshapes", '3dshapes.h5')
+    os.environ.get("DISENTANGLEMENT_TRANSFER_DATA", ""), "3dshapes", '3dshapes.h5')
 
 
 class Shapes3D(FactorData):
@@ -58,9 +58,6 @@ class Shapes3D(FactorData):
       for i in range(self.latents_classes.shape[1]):
           le = LabelEncoder()
           self.latents_classes[:, i] = le.fit_transform(self.latents_classes[:, i])
-
-
-
 
       # remove non-unique elements wrt factors
       _, idx_keep = np.unique(self.latents_classes[:, self.latent_factor_indices], axis=0, return_index=True)

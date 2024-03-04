@@ -7,8 +7,8 @@ from __future__ import print_function
 import numpy as np
 import torch
 import torch.nn.functional as F
-from src.methods.shared.utils.ssim import multiscale_structural_similarity_index_measure as mssim
-from src.methods.shared.utils.ssim import structural_similarity_index_measure as ssim
+from src.utils.ssim import multiscale_structural_similarity_index_measure as mssim
+from src.utils.ssim import structural_similarity_index_measure as ssim
 from torch import nn
 
 from src.methods.AE.architecture import AE
@@ -24,20 +24,11 @@ class Encoder(nn.Module):
         self.layer_count = 4
 
         # Encoder
-        #self.conv1_1 = nn.Conv2d(n_channel, 32, 4, stride=2, padding=0)
-
-        #self.conv1_2 = nn.Conv2d(32, 32, 4, stride=2, padding=0)
-        #self.conv2_1 = nn.Conv2d(32, 64, 4, stride=2, padding=0)
-        #self.conv2_2 = nn.Conv2d(64, 64, 4, stride=2, padding=0)
-        #self.flatten = nn.Flatten()
-
-        #self.linear = nn.Linear(in_features=2304, out_features=latent_dim, bias=True) # 256 --> 64, 2304 --> 128
 
         inputs = n_channel
         for i in range(self.layer_count):
             setattr(self, "conv%d" % (i + 1), nn.Conv2d(inputs, self.d, 4, stride= 2, padding=1))
-            #print(inputs, self.d)
-            #setattr(self, "conv%d_bn" % (i + 1), nn.BatchNorm2d(d * mul))
+
             inputs = self.d #* mul
             if (i+1)%2==0:
                 self.d *=2
@@ -49,27 +40,12 @@ class Encoder(nn.Module):
 
 
     def forward(self, x):
-        #x = F.leaky_relu(self.conv1_1(x))
-        #print(x.size())
-        #x = F.leaky_relu(self.conv1_2(x))
-        #print(x.size())
-        #x = F.leaky_relu(self.conv2_1(x))
-        #x = F.leaky_relu(self.conv2_2(x))
-        #print(x.size())
-        #x = self.flatten(x)
-        #print(x.size())
-
-        #x = self.linear(x)
 
         for i in range(self.layer_count):
             x = F.leaky_relu(getattr(self, "conv%d" % (i + 1))(x))
-            #print(x.size())
 
-        #print(self.d_max * 4 *4)
-        #print(x.size())
 
         x = x.view(x.size(0), self.d_max * self.linear_dim * self.linear_dim)
-        #print(x.size)
 
         x = self.linear(x)
         return x
@@ -119,8 +95,8 @@ class Decoder(nn.Module):
 
 class VAE(AE):
 
-    def __init__(self, n_filters, decoder_distribution,  beta, data_shape, latent_dim, n_channel, criterion, **kwargs):
-        super(VAE, self).__init__(data_shape, latent_dim, n_channel,criterion, **kwargs)
+    def __init__(self, n_filters, decoder_distribution,  beta, data_shape, latent_dim, n_channel, **kwargs):
+        super(VAE, self).__init__(data_shape, latent_dim, n_channel, **kwargs)
 
         self.encoder = Encoder(n_filters, data_shape[0], latent_dim, n_channel)
         self.decoder = Decoder(n_filters, self.encoder.d_max, data_shape, latent_dim, n_channel)
@@ -137,7 +113,7 @@ class VAE(AE):
         # for the gaussian likelihood
         self.log_scale = nn.Parameter(torch.Tensor([0.0]))
         self.beta = beta
-        self.decoder_distribution = decoder_distribution # "gaussian" # "bernoulli"
+        self.decoder_distribution = decoder_distribution
         self.subtract_true_image_entropy = False
         self.data_shape = data_shape
 
@@ -172,13 +148,13 @@ class VAE(AE):
         return {"mean" : mu, "std": torch.exp(0.5 * log_var ), "sampled":z}
 
     def sample(self, num=25):
-        # mean and variance of latent code (better to estimate them with a test set)
+        # mean and variance of latent code (better to estimate them with a test_unsupervised set)
         mean = 0.
         std = 1.
 
         # sample latent vectors from the normal distribution
         latents = torch.randn(num, self.latent_dim) * std + mean
-        imgs = self.decode(latents) #self.decoder.forward(latents.to(self.device))
+        imgs = self.decode(latents)
         return imgs
 
     def decode(self, code):
@@ -202,7 +178,7 @@ class VAE(AE):
 
         elbo = recon_loss - self.beta * kl
         loss = {"kl": kl, "reconstruction": recon_loss, "loss":-elbo, "elbo": recon_loss -  kl}
-        return  loss, y_hat  # * torch.prod(torch.tensor(y_hat.size()))
+        return  loss, y_hat
 
     def kl_divergence(self, mu, log_var):
 
@@ -235,7 +211,6 @@ class VAE(AE):
                 dist = torch.distributions.bernoulli.Bernoulli(probs=x_clamp)
                 loss_lower_bound = torch.sum(dist.entropy(), dim=(1, 2, 3))
 
-            eps = 1e-8
             x_hat_clamp = torch.clamp(x_hat, min=1e-6, max=1 - 1e-6)
             loss = -(x * torch.log(x_hat_clamp) + (1 - x) * torch.log(1 - x_hat_clamp)).sum(dim=(1, 2, 3))
             loss = (loss - loss_lower_bound)
@@ -265,7 +240,6 @@ class VAE(AE):
             'fc_mu_state_dict': self.fc_mu.state_dict(),
             'fc_var_state_dict': self.fc_var.state_dict(),
             'optimizer_state_dict': self._optimizer.state_dict(),
-            'loss': self._criterion,
         }, path)
 
     def load_state(self, path):
@@ -283,4 +257,3 @@ class VAE(AE):
         if self._optimizer is not None:
             self._optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 
-        self._criterion = checkpoint['loss']

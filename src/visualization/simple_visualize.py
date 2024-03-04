@@ -16,14 +16,10 @@ torch.cuda.set_device(device)
 torch.backends.cudnn.benchmark = True
 
 
-import os
 
-import numpy as np
+from src.methods.named_methods import get_named_method
 
-from src.methods.shared.named_methods import get_named_method
-from src.methods.shared.named_loss import get_named_loss
-
-from src.methods.shared.utils.visualize_utils import *
+from src.utils.visualize_utils import *
 from src.data.get_dataset import get_dataset
 
 
@@ -33,13 +29,6 @@ from src.data.get_dataset import get_dataset
 
 
 def save_reconstruction(directory, images, reconstruction):
-    '''
-
-    :param directory:
-    :param images:
-    :param reconstruction:
-    :return:
-    '''
 
 
     images = np.moveaxis(images, 1, -1)
@@ -89,30 +78,37 @@ def visualize_model(directory, args):
     torch.manual_seed(args["random_seed"])
     np.random.seed(0)  # init random seed
 
+    args["data_seed"] = 0
+
     # create the folder devoted to the postprocessing
     old_directory = directory
     directory = create_visualization_directory(directory)
 
     # get loss function
-    criterion = get_named_loss(args["loss"])
     optimizer = torch.optim.Adam
 
     # load entire dataset since the task is to learn a representation
     train_dataset, args = get_dataset(args)
 
+    # rgbd dataset requires shuffling, the others are already shuffled
+    if "rgbd_objects" in args["dataset"]:
+        shuffle = True
+    else:
+        shuffle = None
+
     args["batch_size"]=16
     if args["multithread"]:
 
-        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=False, num_workers=16, drop_last=False, pin_memory=True)
+        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=shuffle, num_workers=16, drop_last=False, pin_memory=True)
 
         print("Using Dataloader multithreading!")
     else:
-        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=False, num_workers=0, drop_last=False, pin_memory=False)
+        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=shuffle, num_workers=0, drop_last=False, pin_memory=False)
         print("Not using Dataloader multithreading!")
 
 
     # get model
-    model = get_named_method(args["method"])(**args, criterion=criterion)
+    model = get_named_method(args["method"])(**args)
     model.load_state(os.path.join(old_directory, "model", "checkpoint", "model.pth"))
 
     # build optimizer with model parameters
@@ -122,10 +118,6 @@ def visualize_model(directory, args):
     model.to(device)
 
     print("===============START VISUALIZATIONS===============")
-
-    num_random_samples = 64
-    num_animations = 5
-    num_templates = 10
 
     model.eval()
 

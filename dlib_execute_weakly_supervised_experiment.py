@@ -9,15 +9,18 @@ import shutil
 
 from absl import app
 from absl import flags
-from src.config.named_experiment import get_named_experiment
-from src.methods.shared.evaluation.eval_representation import evaluation_model
-from src.methods.shared.postprocessing.postprocess import postprocess_model
-from src.methods.shared.traininig.experimental.train_weak import train_model
-from src.methods.shared.visualization.visualize import visualize_model
+
+from configs.named_experiment import get_named_experiment
+from src.traininig.train_weak import train_model
+from src.postprocessing.postprocess import postprocess_model
+from src.visualization.visualize import visualize_model
+from src.evaluation.eval_representation import evaluation_model
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("experiment", None, "Name of the experiment to run")
 flags.DEFINE_string("model_num", None, "Directory to save trained model in")
+flags.DEFINE_integer("save_interval", 10000, "Number of iterations after which save the model")
+
 flags.DEFINE_boolean("overwrite", False, "Whether to overwrite output directory.")
 flags.DEFINE_string("output_directory", None, "Output directory of experiments ('{model_num}' will be"
                                                 " replaced with the model index  and '{experiment}' will be"
@@ -53,6 +56,7 @@ def main(unused_args):
     # train model
     train_config = experiment.get_model_config(model_num=int(FLAGS.model_num))
     train_config["grad_acc_steps"] = FLAGS.grad_acc_steps # gradient accumulation parameter
+    train_config["save_interval"] = FLAGS.save_interval  # save model interval parameter
     experiment.print_model_config(model_num=int(FLAGS.model_num))
     train_model(output_directory, train_config)
 

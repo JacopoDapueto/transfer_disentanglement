@@ -3,10 +3,10 @@ import numpy as  np
 
 
 def split_train_test(observations, observations2=None, train_percentage=0.66):
-  """Splits observations into a train and test set.
+  """Splits observations into a train and test_unsupervised set.
 
   Args:
-    observations: Observations to split in train and test. They can be the
+    observations: Observations to split in train and test_unsupervised. They can be the
       representation or the observed factors of variation. The shape is
       (num_dimensions, num_points) and the split is over the points.
     train_percentage: Fraction of observations to be used for training.
@@ -30,5 +30,5 @@ def split_train_test(observations, observations2=None, train_percentage=0.66):
 
 
   assert observations_test.shape[1] == num_labelled_samples_test, \
-      "Wrong size of the test set."
+      "Wrong size of the test_unsupervised set."
   return observations_train, observations_test

@@ -14,11 +14,11 @@ from src.data.factor_data_class import FactorData
 from src.data.utils import set_transform
 
 DSPRITES_PATH = os.path.join(
-    os.environ.get("DISENTANGLEMENT_LIB_DATA", ""), "dsprites",
+    os.environ.get("DISENTANGLEMENT_TRANSFER_DATA", ""), "dsprites",
     "dsprites_ndarray_co1sh3sc6or40x32y32_64x64.npz")
 
 TEXTURE_PATH = os.path.join(
-    os.environ.get("DISENTANGLEMENT_LIB_DATA", ""), "texture")
+    os.environ.get("DISENTANGLEMENT_TRANSFER_DATA", ""), "texture")
 
 
 class DSprites(FactorData):

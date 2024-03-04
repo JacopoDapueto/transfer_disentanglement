@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 from sklearn import linear_model
 
-from src.methods.shared.metrics.metric import Metric
-from src.methods.shared.utils.metric_utils import split_train_test
+from src.evaluation.metrics.metric import Metric
+from src.utils.metric_utils import split_train_test
 
 
 def _get_one_shared_couples(representation, factors, index, batch_size, random_state):

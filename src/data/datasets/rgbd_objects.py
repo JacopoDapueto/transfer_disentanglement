@@ -1,4 +1,3 @@
-"""DSprites dataset and new variants with probabilistic decoders."""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -26,7 +25,7 @@ from src.data.datasets.dsprites import DSprites
 from src.data import utils
 
 RGBDOBJECTS_PATH = os.path.join(
-    os.environ.get("DISENTANGLEMENT_LIB_DATA", ""), "rgbd-objects")
+    os.environ.get("DISENTANGLEMENT_TRANSFER_DATA", ""), "rgbd-objects")
 
 
 def SquarePad( image, **params):
@@ -38,13 +37,6 @@ def SquarePad( image, **params):
     image_padded = F.pad(Image.fromarray(image), padding, 0, 'constant')
     return np.asarray(image_padded)
 
-"""
-max_wh = max(image.size)
-        p_left, p_top = [(max_wh - s) // 2 for s in image.size]
-        p_right, p_bottom = [max_wh - (s+pad) for s, pad in zip(image.size, [p_left, p_top])]
-        padding = (p_left, p_top, p_right, p_bottom)
-        return F.pad(image, padding, 0, 'constant')
-"""
 
 
 def loader_rgb(file):
@@ -65,7 +57,7 @@ def loader_binary(file):
 
     mask = repeat_3channels(mask)
 
-    return mask  # np.moveaxis(mask, 0, -1)
+    return mask
 
 
 class HierarchicalImageFolder(Dataset):
@@ -86,7 +78,6 @@ class HierarchicalImageFolder(Dataset):
 
         self.imgs, self.classes = self.read_nested_images(root, ftype, hlevel)
 
-        # self.transforms = transforms
 
     def __len__(self):
         return len(self.imgs)
@@ -108,12 +99,7 @@ class HierarchicalImageFolder(Dataset):
         mask_path = img_path[:-8] + "maskcrop.png"
         mask = loader_binary(mask_path)
 
-        # if not isinstance(mask, np.ndarray ):
-
         if self.albumentation_transform is not None:
-            # img = self.transforms(img)
-            # mask = self.transforms(mask)
-
             augmented = self.albumentation_transform(image=img, mask=mask)
 
             img = augmented['image']
@@ -168,22 +154,16 @@ def pop_instances(X, Y, max_instances, category_encoder, label_encoders):
     return new_X, new_Y
 
 
+"""
+                NOT SUPPORTING TRAINING
+"""
 class RGBDObjects(HierarchicalImageFolder):
 
     def __init__(self, latent_factor_indices=None, batch_size=1, random_state=0, resize=64, center_crop=None,
                  split="train", **kwargs):
-        # By default, all factors are considered ground truth
-        # factors.
 
         self.split = split
         self.path = os.path.join(RGBDOBJECTS_PATH, "eval" if split == "eval" else "train")
-
-        # trasform images and masks
-        max_height = 237
-        max_width = 325
-
-        # A.Lambda(name='togray',image=toGray), A.PadIfNeeded(min_height=max_height, min_width=max_width,
-        #                                                  border_mode=cv2.BORDER_CONSTANT, value=0, mask_value=0, p=1)
 
         pad_if_needed = A.Compose([
                                     A.Lambda(name='square_pad',image=SquarePad, mask=SquarePad),
@@ -245,13 +225,6 @@ class RGBDObjectsDepth(HierarchicalImageFolder):
         self.split = split
         self.path = os.path.join(RGBDOBJECTS_PATH, "eval" if split == "eval" else "train")
 
-        # trasform images and masks
-        max_height = 237
-        max_width = 325
-
-        # A.Lambda(name='togray',image=toGray), A.PadIfNeeded(min_height=max_height, min_width=max_width,
-        #                                                  border_mode=cv2.BORDER_CONSTANT, value=0, mask_value=0, p=1)
-
         pad_if_needed = A.Compose([
                                     A.Lambda(name='square_pad',image=SquarePad, mask=SquarePad),
                                    A.Resize(resize, resize, p=1)], is_check_shapes=False, p=1)
@@ -290,21 +263,11 @@ class RGBDObjectsDepth(HierarchicalImageFolder):
 
         img = img.astype(np.uint8)
 
-        # load mask
-        mask_path = img_path[:-14] + "_maskcrop.png"
-        #mask = loader_binary(mask_path)
-
-        # if not isinstance(mask, np.ndarray ):
 
         if self.albumentation_transform is not None:
-            # img = self.transforms(img)
-
             augmented = self.albumentation_transform(image=img)
 
             img = augmented['image']
-
-        # mask object
-        #img = img * (mask // np.max(mask))
 
         labels = np.array([category_idx, instance_idx, azimuth_idx, pose_idx])
         return self.transform(img), torch.from_numpy(labels)
@@ -312,7 +275,6 @@ class RGBDObjectsDepth(HierarchicalImageFolder):
 
     def num_channels(self):
         return 1
-
 
     def get_images(self, index):
         batch_imgs, classes = self.__getitem__(index)
