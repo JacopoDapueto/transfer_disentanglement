@@ -40,7 +40,7 @@ bash ./bash_scripts/transfer_*.sh
 ```
 
 The results will be save in `./outuput` directory, organized by experiment name:
-*source_experiment*_to_*target_experiment*
+*source_experiment*\_to\_*target_experiment*
 
 
 
