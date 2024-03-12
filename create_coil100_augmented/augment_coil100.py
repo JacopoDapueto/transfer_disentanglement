@@ -7,21 +7,21 @@ import pandas as pd
 import shutil
 
 COIL100_PATH = os.path.join(
-    os.environ.get("DISENTANGLEMENT_LIB_DATA", "../src/data/datasets"), "coil-100",
+    os.environ.get("DISENTANGLEMENT_TRANSFER_DATA", "../src/data/datasets"), "coil-100",
     "coil-100")
 
 COIL100BINARY_PATH = os.path.join(
-    os.environ.get("DISENTANGLEMENT_LIB_DATA", "../src/data/datasets"), "coil-100",
+    os.environ.get("DISENTANGLEMENT_TRANSFER_DATA", "../src/data/datasets"), "coil-100",
     "coil-100-binary")
 
 
 COIL100AUGMENTED_PATH = os.path.join(
-    os.environ.get("DISENTANGLEMENT_LIB_DATA", "../src/data/datasets"), "coil-100",
+    os.environ.get("DISENTANGLEMENT_TRANSFER_DATA", "../src/data/datasets"), "coil-100",
     "coil-100-augmented")
 
 
 COIL100AUGMENTEDBINARY_PATH = os.path.join(
-    os.environ.get("DISENTANGLEMENT_LIB_DATA", "../src/data/datasets"), "coil-100",
+    os.environ.get("DISENTANGLEMENT_TRANSFER_DATA", "../src/data/datasets"), "coil-100",
     "coil-100-augmented-binary")
 
 
