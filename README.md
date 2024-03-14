@@ -63,4 +63,8 @@ The results will be saved in `./outuput` directory, organized by experiment name
 ```
 python dlib_aggregate_results_transfer_experiment.py --experiment experiment_name 
 ```
+**Then** to read and save the results of the experiment run
+```
+python dlib_compare_transfer.py --experiment experiment_name --values_to_aggregate "model_num"
+```
 
