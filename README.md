@@ -41,7 +41,12 @@ The scripts starting with *train_* execute the training of the Source models.
 bash ./bash_scripts/train_*.sh
 ```
 
-The results will be save in `./outuput` directory, organized by experiment name.
+The results will be save in `./outuput` directory, organized by _experiment\_name_ and numbered by the _random seed_.
+
+Once one experiment folder is completed aggregate the results of all random seeds with the scripts
+```
+python dlib_aggregate_results_experiment.py --experiment _experiment\_name_
+```
 
 
 ### Transfer on Target dataset
