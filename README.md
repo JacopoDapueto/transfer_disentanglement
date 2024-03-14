@@ -2,7 +2,7 @@
 
 ## Set up
 ### Install
-The code was developed and tested with Python 3.10 and the main dependences are Pytorch 2.0.0 and Cuda 11.7
+The code was developed and tested with Python 3.10 and the main dependencies are Pytorch 2.0.0 and Cuda 11.7
 
 Set up the environment and then install the dependencies with
 ```
@@ -11,18 +11,18 @@ pip install -r requirements.txt
 
 ### Download and prepare datasets
 
-1- Set the environment variable `DISENTANGLEMENT_TRANSFER_DATA` to this path, for example by adding
+1. Set the environment variable `DISENTANGLEMENT_TRANSFER_DATA` to this path, for example by adding
 
 ```
 export DISENTANGLEMENT_TRANSFER_DATA=<path to the data directory>
 ```
-2 - Download all the necessary datasets with the script
+2. Download all the necessary datasets with the script
 ```
 ./bash_scripts/download_datasets.sh
 ```
-3 - Unzip the compressed files (Coil100 and RGDB Objects)
+3. Unzip the compressed files (Coil100 and RGDB Objects)
 
-4 - Create the augmented and binary version of Coil100 with the command
+4. Create the augmented and binary version of Coil100 with the command
 ```
 python create_coil100_augmented/augment_coil100.py
 ```
