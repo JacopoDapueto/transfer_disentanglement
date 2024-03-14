@@ -6,6 +6,7 @@ import itertools
 import pandas as pd
 import shutil
 
+
 COIL100_PATH = os.path.join(
     os.environ.get("DISENTANGLEMENT_TRANSFER_DATA", "../src/data/datasets"), "coil-100",
     "coil-100")
@@ -103,7 +104,7 @@ def binarize_dataset(path = COIL100BINARY_PATH):
         cv2.imwrite(os.path.join(path, name), binary)
 
 
-def create_csv(path = COIL100BINARY_PATH):
+def create_csv(path = COIL100BINARY_PATH, save_classes = True, save_factors = True):
     # factors list
     factors = []
     obj_range = range(1, 101)
@@ -128,10 +129,12 @@ def create_csv(path = COIL100BINARY_PATH):
                                                                       index=False)
 
     # copy classes
-    shutil.copyfile(os.path.join(COIL100_PATH, "classes.csv"), os.path.join(path, "classes.csv"))
+    if save_classes:
+        shutil.copyfile(os.path.join(COIL100_PATH, "classes.csv"), os.path.join(path, "classes.csv"))
 
     # copy factors
-    shutil.copyfile(os.path.join(COIL100_PATH, "factors.csv"), os.path.join(path, "factors.csv"))
+    if save_factors:
+        shutil.copyfile(os.path.join(COIL100_PATH, "factors.csv"), os.path.join(path, "factors.csv"))
 
 
 def create_augmented_csv(augmented_path = COIL100AUGMENTEDBINARY_PATH):
@@ -192,15 +195,15 @@ if __name__ == "__main__":
     # assuming original COIL100 is in folder COIL100_PATH
 
     # create folders
-    if os.path.exists(COIL100AUGMENTED_PATH):
+    if not os.path.exists(COIL100AUGMENTED_PATH):
         os.makedirs(COIL100AUGMENTED_PATH)
 
-    if os.path.exists(COIL100AUGMENTEDBINARY_PATH):
+    if not os.path.exists(COIL100AUGMENTEDBINARY_PATH):
         os.makedirs(COIL100AUGMENTEDBINARY_PATH)
 
 
     # augment RGB dataset
-    create_csv(COIL100_PATH)
+    create_csv(COIL100_PATH, save_classes=False, save_factors=False)
     create_csv(COIL100AUGMENTED_PATH)
     augment_data(COIL100_PATH, COIL100AUGMENTED_PATH)
 
