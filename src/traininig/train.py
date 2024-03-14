@@ -18,7 +18,6 @@ from torch.utils.data import Dataset, DataLoader
 
 
 from src.methods.named_methods import get_named_method
-from src.methods.shared.named_loss import get_named_loss
 
 from src.data.get_dataset import get_dataset
 
@@ -62,14 +61,13 @@ def train_model(directory, args):
     # create the folder devoted to the model
     directory = create_model_directory(directory)
 
-    criterion = get_named_loss(args["loss"])
     optimizer = torch.optim.Adam
 
     # load entire dataset since the task is to learn a representation
     train_dataset, args = get_dataset(args)
 
     # get model
-    model = get_named_method(args["method"])(**args, criterion=criterion)
+    model = get_named_method(args["method"])(**args)
 
     # build optimizer with model parameters
     model.build_model(optimizer, **args)
@@ -88,14 +86,20 @@ def train_model(directory, args):
     n_accumulation = args["grad_acc_steps"]  # steps for gradient accumulation
     total_iterations = args["iterations"] * n_accumulation  # count n_accumulations as one iteration
 
+    # rgbd dataset requires shuffling, the others are already shuffled
+    if "rgbd_objects" in args["dataset"]:
+        shuffle = True
+    else:
+        shuffle = None
+
     if args["multithread"]:
 
-        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"] // n_accumulation, shuffle=False,
+        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"] // n_accumulation, shuffle=shuffle,
                               num_workers=16, drop_last=False, pin_memory=True)
 
         print("Using Dataloader multithreading!")
     else:
-        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"] // n_accumulation, shuffle=False,
+        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"] // n_accumulation, shuffle=shuffle,
                               num_workers=0, drop_last=False, pin_memory=False)
         print("Not using Dataloader multithreading!")
 
@@ -127,8 +131,6 @@ def train_model(directory, args):
             inputs, _ = next(data_iter)
             print("-" * 20, "New epoch!", "-" * 20)
 
-            # update learning rate
-            # model.update_learning_rate(batch_loss/batch_iterations)
 
             batch_loss = 0.0  # intialize
             batch_iterations = 1
@@ -198,9 +200,7 @@ def train_model(directory, args):
 
             start_time = time.time()
 
-    # save last iteration
-    # checkpoint_path = save_model(directory, model)
-    # print(f"Last Checkpoint saved at {checkpoint_path}")
+
 
     print("===============END TRAINING===============")
 

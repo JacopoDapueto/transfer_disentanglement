@@ -87,7 +87,7 @@ def train_model(directory, args):
 
     if "load_weights" in args and args["load_weights"]:
 
-        model.load_state(os.path.join(directory, "checkpoint", "model.pth")) # ,  map_location=self.device
+        model.load_state(os.path.join(directory, "checkpoint", "model.pth"))
 
     # list to save statistics
     loss_list = []
@@ -99,14 +99,20 @@ def train_model(directory, args):
     n_accumulation = args["grad_acc_steps"]  # steps for gradient accumulation
     total_iterations = args["iterations"] * n_accumulation # count n_accumulations as one iteration
 
+    # rgbd dataset requires shuffling, the others are already shuffled
+    if "rgbd_objects" in args["dataset"]:
+        shuffle = True
+    else:
+        shuffle = None
+
     # Dataset class is already shuffling the data
     if args["multithread"]:
 
-        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"]//n_accumulation, shuffle=None, num_workers=16, drop_last=False, pin_memory=True)
+        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"]//n_accumulation, shuffle=shuffle, num_workers=16, drop_last=False, pin_memory=True)
 
         print("Using Dataloader multithreading!")
     else:
-        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"]//n_accumulation, shuffle=None, num_workers=0, drop_last=False, pin_memory=False)
+        train_dl = DataLoader(train_dataset, batch_size=args["batch_size"]//n_accumulation, shuffle=shuffle, num_workers=0, drop_last=False, pin_memory=False)
         print("Not using Dataloader multithreading!")
 
     print("Number of total parameters of the model: {:,}".format(model.num_params()))
@@ -135,8 +141,6 @@ def train_model(directory, args):
             inputs1, inputs2, _, _, label = next(data_iter)
             print("-"*20, "New epoch!", "-"*20)
 
-            # update learning rate
-            #model.update_learning_rate(batch_loss/batch_iterations)
 
             batch_loss=0.0 # intialize
             batch_iterations = 1
@@ -208,10 +212,6 @@ def train_model(directory, args):
 
             start_time = time.time()
 
-
-    # save last iteration
-    #checkpoint_path = save_model(directory, model)
-    #print(f"Last Checkpoint saved at {checkpoint_path}")
 
     print("===============END TRAINING===============")
 

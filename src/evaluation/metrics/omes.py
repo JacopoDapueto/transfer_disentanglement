@@ -244,11 +244,11 @@ def get_score(X, Y, representation, alpha=0.5, gamma = False):
     return score, inactives, association, covs, factors_score
 
 
-class CCD(Metric):
+class OMES(Metric):
 
     def __init__(self,  mode, **kwargs):
 
-        super(CCD, self).__init__(**kwargs)
+        super(OMES, self).__init__(**kwargs)
 
         self.alpha_list = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 1.0, 0.0]  # parameter for my metric
         self.gamma_list = [False, True]
@@ -306,11 +306,11 @@ class CCD(Metric):
         return alpha_scores
 
 
-class CCDFactors(CCD):
+class OMESFactors(OMES):
 
     def __init__(self, mode, **kwargs):
 
-        super(CCDFactors, self).__init__(mode, **kwargs)
+        super(OMESFactors, self).__init__(mode, **kwargs)
 
     def get_score(self):
         ''' Return the score '''

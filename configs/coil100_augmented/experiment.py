@@ -106,7 +106,7 @@ def get_config_postprocess():
 
 
 def get_metrics():
-    return h.fixed("metrics", ["ccd", "ccd_factors", "mig", "dci-disentanglement", "beta_vae", "factor_vae", "gbt_regressor", "mlp_regressor", "gbt_regressor_pruned", "mlp_regressor_pruned"])  #
+    return h.fixed("metrics", ["omes", "omes_factors", "mig", "dci-disentanglement", "beta_vae", "factor_vae", "gbt_regressor", "mlp_regressor", "gbt_regressor_pruned", "mlp_regressor_pruned"])  #
 
 
 def get_config_eval():

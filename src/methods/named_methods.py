@@ -14,6 +14,7 @@ def get_named_method(name):
 
     if name == "AE":
         return AE
+
     elif name == "VAE":
         return VAE
 
@@ -22,6 +23,7 @@ def get_named_method(name):
 
     elif name == "EFFICIENTWEAKVAE":
         return EFFICIENTWEAKVAE
+
     elif name == "EFFICIENTVAE":
         return EFFICIENTVAE
 

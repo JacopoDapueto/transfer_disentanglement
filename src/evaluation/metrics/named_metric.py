@@ -3,7 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 
-from src.evaluation.metrics.ccd import CCD, CCDFactors
+from src.evaluation.metrics.omes import OMES, OMESFactors
 from src.evaluation.metrics.mig import MIG, MIGFactors
 from src.evaluation.metrics.dci import DCI_disentanglement
 from src.evaluation.metrics.downstream_task import GBT_regressor, MLP_regressor, GBT_regressor_pruned, MLP_regressor_pruned
@@ -14,10 +14,10 @@ from src.evaluation.metrics.factor_vae_score import FactorVaeScore
 
 def get_named_metric(name):
 
-    if name == "ccd":
-        return CCD
-    elif name == "ccd_factors":
-        return CCDFactors
+    if name == "omes":
+        return OMES
+    elif name == "omes_factors":
+        return OMESFactors
     elif name == "mig":
         return MIG
     elif name == "beta_vae":

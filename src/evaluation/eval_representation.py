@@ -43,14 +43,20 @@ def compute_loss(directory, args ):
     if args["batch_size"] > 8:
         args["batch_size"] = 8
 
+    # rgbd dataset requires shuffling, the others are already shuffled
+    if "rgbd_objects" in args["dataset"]:
+        shuffle = True
+    else:
+        shuffle = None
+
     # dataset already shuffled at runtime
     if args["multithread"]:
 
-        train_dl = DataLoader(train_dl, batch_size=args["batch_size"], shuffle=False, num_workers=16, drop_last=False, pin_memory=False)
+        train_dl = DataLoader(train_dl, batch_size=args["batch_size"], shuffle=shuffle, num_workers=16, drop_last=False, pin_memory=False)
 
         print("Using Dataloader multithreading!")
     else:
-        train_dl = DataLoader(train_dl, batch_size=args["batch_size"], shuffle=False, num_workers=0, drop_last=False, pin_memory=False)
+        train_dl = DataLoader(train_dl, batch_size=args["batch_size"], shuffle=shuffle, num_workers=0, drop_last=False, pin_memory=False)
         print("Not using Dataloader multithreading!")
 
     args["repetitions"] = 1024

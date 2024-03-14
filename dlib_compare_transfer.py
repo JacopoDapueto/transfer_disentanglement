@@ -37,16 +37,15 @@ flags.DEFINE_string("output_directory", None, "Output directory of experiments (
                                                 " replaced with the study name if present).")
 
 
-hyperparametrs_name = {"ccd":"$\alpha$", "ccd_factors": "$\alpha$", "mig":"mig", "dci-disentanglement":"dci-disentanglement",
+hyperparametrs_name = {"omes":"$\alpha$", "ccd_factors": "$\alpha$", "mig":"mig", "dci-disentanglement":"dci-disentanglement",
                        "beta_vae": "beta_vae_score", "factor_vae":"factor_vae_score", "gbt_regressor": "gbt_regressor",  "gbt_regressor_pruned": "gbt_regressor_pruned",
                        "mlp_regressor": "mlp_regressor", "mlp_regressor_pruned": "mlp_regressor_pruned", "elbo": "ELBO", "reconstruction": "Recons. loss" } # name of hyperparameters of the metrics
-#metric_plot_func = {"ccd": plot_metric, "ccd_factors": plot_metric_group} # kind of plot for each different metric
 
 
 results_list = {"elbo": "ELBO", "reconstruction": "Recons. loss", "gbt_regressor" : "GBT10000"}
 
 metrics_list = {"beta_vae": "BetaVAE Score",
-                "ccd":"Our",
+                "omes":"Our",
                 "dci-disentanglement":"DCI: Disentanglement",
                 "elbo": "ELBO",
                 "factor_vae":"FactorVAE Score",
@@ -77,7 +76,6 @@ def aggregate_models(data):
 
     metrics_dict = {}
     for key, value in data:
-        #print(key)
 
         info_list = list(value)
         # aggregate results
@@ -85,7 +83,6 @@ def aggregate_models(data):
             metrics = info["metrics"]
 
             flatten_dict = flatten(metrics)
-            #specs, results = flatten_dict.keys(), flatten_dict
 
             # for each (metric, hyperparameter)
             for spec, result in flatten_dict.items():
@@ -109,7 +106,6 @@ def aggregate_metrics(data):
 
     aggregated_dict = {}
     for key, v in groupby_data:
-        #print(key, list(v))
         aggregated_dict[key]  = {}
         v = list(v)
 
@@ -127,11 +123,11 @@ def aggregate_metrics(data):
 def load_aggregate_results(output_directory, alpha=0.0, gamma=False):
 
     # attributes for loss-metrics rank correlation matrix
-    loss_metrics_rank_dict = {"beta_vae": [], "ccd": [], "dci-disentanglement": [], "elbo": [], "factor_vae": [],
+    loss_metrics_rank_dict = {"beta_vae": [], "omes": [], "dci-disentanglement": [], "elbo": [], "factor_vae": [],
                               "gbt_regressor": [], "mig": [], "mlp_regressor": [], "reconstruction": []}
 
     # attributes for loss-metrics rank correlation matrix
-    metrics_violinplot_dict = {"beta_vae": [], "ccd": [], "dci-disentanglement": [], "factor_vae": [], "mig": []}
+    metrics_violinplot_dict = {"beta_vae": [], "omes": [], "dci-disentanglement": [], "factor_vae": [], "mig": []}
     downstream_task_violinplot_dict = {"mlp_regressor": {}, "gbt_regressor": {}}
 
     # attributes for double violinplot
@@ -159,7 +155,6 @@ def load_aggregate_results(output_directory, alpha=0.0, gamma=False):
         info["model_num"] = model_num
 
     result_list = [ info for model_num, info in results.items()]
-    #print(result_list)
 
     # aggregated wrt experiments info
     partial_key_func = itemgetter(*FLAGS.values_to_aggregate)
@@ -176,12 +171,11 @@ def load_aggregate_results(output_directory, alpha=0.0, gamma=False):
 
         ##### prepare data for correlation rank #####
         if metric in loss_metrics_rank_dict.keys() or metric=="mlp_regressor_pruned" or metric=="gbt_regressor_pruned":
-            if metric=="ccd" :
+            if metric=="omes" :
                 if spec[-1]==alpha and spec[-2]==gamma: # pick only alpha==0.5
                     loss_metrics_rank_dict[metric] = [v[0] for k, v in values.items()]
 
                     # for each fov repeat the score metric
-                    #for k, v in values.items():
                     for _ in ["mlp", "gbt"]:
                         for _ in ["pruned", "not"]:
                             for _ in range(len(FLAGS.fov_names)) :
@@ -252,7 +246,7 @@ def load_aggregate_results(output_directory, alpha=0.0, gamma=False):
 
         ##### prepare data for violinplots #####
         if metric in metrics_violinplot_dict.keys():
-            if metric=="ccd" :
+            if metric=="omes" :
                 if spec[-1]==alpha and spec[-2]==gamma: # pick only alpha==0.5
 
                     metrics_violinplot_dict[metric] = [v[0] for k, v in values.items()]
