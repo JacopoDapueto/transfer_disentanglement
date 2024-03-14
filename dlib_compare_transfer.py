@@ -4,10 +4,8 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-import shutil
 import pickle
 import sys
-import matplotlib.pyplot as plt
 import numpy as np
 from absl import app
 from absl import flags
@@ -15,10 +13,6 @@ from itertools import groupby
 from operator import itemgetter
 import pandas as pd
 
-import matplotlib.cm as cm
-from matplotlib import rcParams
-rcParams.update({'figure.autolayout': True})
-import seaborn as sns
 
 
 if sys.version_info.major == 3 and sys.version_info.minor >= 10:
@@ -27,11 +21,9 @@ if sys.version_info.major == 3 and sys.version_info.minor >= 10:
 else:
     from collections import MutableMapping
 
-from functools import partial
 
 
-from src.config.named_experiment import get_named_experiment
-from src.methods.shared.utils.visualize_utils import plot_metric_group, plot_metric
+from configs.named_experiment import get_named_experiment
 
 
 FLAGS = flags.FLAGS
@@ -179,13 +171,8 @@ def load_aggregate_results(output_directory, alpha=0.0, gamma=False):
 
     # group same aggregator, same spec
     for spec, values in metrics.items():
-        print(spec)
-        metric_name = list(spec)[0]
-
 
         metric = [ s for s in spec if s in hyperparametrs_name.keys()][0]
-        hyper_name  = hyperparametrs_name[metric]
-        #plot_func = metric_plot_func[metric]
 
         ##### prepare data for correlation rank #####
         if metric in loss_metrics_rank_dict.keys() or metric=="mlp_regressor_pruned" or metric=="gbt_regressor_pruned":
@@ -217,13 +204,11 @@ def load_aggregate_results(output_directory, alpha=0.0, gamma=False):
             elif metric=="mlp_regressor" or metric=="gbt_regressor":
 
                 if "mean_test_accuracy" in spec[-1]: # pick only mean accuracy
-                    #print(values)
                     loss_metrics_rank_dict[metric] = [v[0] for k, v in values.items()]
 
 
                     downstream_task_violinplot_dict[metric] = [v[0] for k, v in values.items()]
 
-                                        # dict for doubleviolinplot
                     comparison_downstream_task_violinplot_dict["score"] += [v[0] for k, v in values.items()]
                     comparison_downstream_task_violinplot_dict["regressor"] += [metric for k, v in values.items()]
                     comparison_downstream_task_violinplot_dict["pruned"] += [False for k, v in values.items()]
@@ -276,20 +261,6 @@ def load_aggregate_results(output_directory, alpha=0.0, gamma=False):
 
 
 
-    # plot correlations rank
-    #df_correlation = pd.DataFrame.from_dict(loss_metrics_rank_dict)
-
-
-    # plot violinplots
-    #df_metrics_violinplot = pd.DataFrame.from_dict(metrics_violinplot_dict)
-
-    # overall performances
-    #df_downstream_task_violinplot = pd.DataFrame.from_dict(downstream_task_violinplot_dict)
-
-
-    #df_comparison_downstream_task_violinplot = pd.DataFrame.from_dict(comparison_downstream_task_violinplot_dict)
-
-
     df_comparison_downstream_task_fov_violinplot = pd.DataFrame.from_dict(comparison_downstream_task_fov_violinplot_dict)
     mlp_df = df_comparison_downstream_task_fov_violinplot.loc[
         df_comparison_downstream_task_fov_violinplot["regressor"] == "mlp_regressor"]
@@ -297,7 +268,7 @@ def load_aggregate_results(output_directory, alpha=0.0, gamma=False):
     gbt_df = df_comparison_downstream_task_fov_violinplot.loc[
         df_comparison_downstream_task_fov_violinplot["regressor"] == "gbt_regressor"]
 
-    return mlp_df
+    return gbt_df
 
 def to_mean(df):
 
@@ -376,9 +347,6 @@ def join_improvement_baseline(df_baseline, df_improvement):
 
     df_join = df_baseline.copy()
 
-    #df_join = df_join.astype(str)
-    #df_improvement = df_improvement.map('${:+}'.format).astype(str)
-
     # gives a tuple of column name and series
     # for each column in the dataframe
     for (column, data) in df_improvement.items():
@@ -387,7 +355,6 @@ def join_improvement_baseline(df_baseline, df_improvement):
             continue
 
         data = data.map('{:+,.1f}'.format)
-        #data = data.values
 
         # append
         df_join[column] = df_join[column] * 100.
@@ -436,15 +403,14 @@ def main(unused_args):
     mig_improvement = performances_after["mig"] - performances_before["mig"]
 
 
-    performances_before["acc_imp"] = accuracy_improvement * 100. #np.round(accuracy_improvement * 100. , 3)
-    performances_before["dis_imp"] = disentanglement_improvement * 100. #np.round(disentanglement_improvement * 100., 3)
+    performances_before["acc_imp"] = accuracy_improvement * 100.
+    performances_before["dis_imp"] = disentanglement_improvement * 100.
     performances_before["mig_imp"] = mig_improvement * 100.
     performances_before["dci_imp"] = dci_improvement * 100.
 
     to_latex = to_latex_table(performances_before)
-    print(to_latex)
 
-    to_latex.style.hide(axis="index").to_latex(os.path.join(output_directory, "improvement_mlp.tex")) #  , index=False, float_format="%.3f"
+    to_latex.style.hide(axis="index").to_latex(os.path.join(output_directory, "improvement_gbt.tex"))
 
 if __name__ == "__main__":
     app.run(main)
