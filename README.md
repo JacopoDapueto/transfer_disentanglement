@@ -3,9 +3,9 @@
 
 ---
 
-## Set up
-### Install
-The code was developed and tested with Python 3.10 and the main dependencies are Pytorch 2.0.0 and Cuda 11.7
+## 🔧 Dependencies and Installation
+### Install dependencies
+The code was developed and tested with Python 3.10 and the main dependencies are [Pytorch == 2.0.0 ](https://pytorch.org/) and [Cuda==11.7](https://developer.nvidia.com/cuda-toolkit)
 
 Set up the environment and then install the dependencies with
 ```
@@ -70,4 +70,11 @@ python dlib_aggregate_results_transfer_experiment.py --experiment experiment_nam
 ```
 python dlib_compare_transfer.py --experiment experiment_name --values_to_aggregate "model_num"
 ```
+
+## Contacts
+If you have any questions, you are very welcome to email jacopo.dapueto@gmail.com
+
+## Bibtex
+If you find this useful for your research and applications, please cite using this BibTeX:
+
 
