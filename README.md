@@ -1,6 +1,8 @@
 # Transferring disentangled representations: bridging the gap between synthetic and real images
 [[Paper](https://arxiv.org/abs/2409.18017)]
 
+---
+
 ## Set up
 ### Install
 The code was developed and tested with Python 3.10 and the main dependencies are Pytorch 2.0.0 and Cuda 11.7
