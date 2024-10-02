@@ -1,5 +1,5 @@
 # Transferring disentangled representations: bridging the gap between synthetic and real images
-[Paper](https://arxiv.org/abs/2409.18017)
+[[Paper](https://arxiv.org/abs/2409.18017)]
 
 ## Set up
 ### Install
