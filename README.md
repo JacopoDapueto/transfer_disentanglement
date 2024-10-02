@@ -29,8 +29,10 @@ export DISENTANGLEMENT_TRANSFER_DATA=<path to the data directory>
 ```
 python create_coil100_augmented/augment_coil100.py
 ```
+## OMES usage
 
-## How to reproduce 
+
+## How to reproduce Transfer experiments
 
 To reproduce the experiment of the study use the scripts in the folder 
 ```
