@@ -16,7 +16,6 @@ from src.evaluation.metrics.omes import OMES, OMESFactors
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("representation_directory", None, "Path to the folder containing the representation and FoVs labels.")
-flags.DEFINE_string("model_num", None, "Directory to save trained model in")
 
 
 
