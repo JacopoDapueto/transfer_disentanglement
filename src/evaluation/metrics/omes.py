@@ -78,7 +78,7 @@ def overlapping_score(idx_factor, covs, gamma=False):
         o_score = _overlapping_score(dim, idx_factor, covs)
         o_scores.append(o_score)
 
-    if gamma:
+    if gamma == "avg":
         # consider all dimensions in the computation
         return np.average(o_scores * covs[:, idx_factor], weights=  covs[:, idx_factor])
 
@@ -114,8 +114,9 @@ def multiple_encoding_score(idx_factor, covs, gamma):
         me_score = _multiple_encoding_score(dim, idx_factor, covs)
         me_scores.append(me_score)
 
+
     me_scores = np.array(me_scores)
-    if gamma:
+    if gamma == "avg":
 
         return np.average(me_scores * covs[:, idx_factor], weights=covs[:, idx_factor])
 
@@ -123,7 +124,7 @@ def multiple_encoding_score(idx_factor, covs, gamma):
     return np.max(me_scores * covs[:, idx_factor])
 
 
-def disentanglement_score(covs, factors, alpha=0.5, gamma=False):
+def disentanglement_score(covs, factors, alpha=0.5, gamma = "avg"):
     scores = {f: 0.0 for f in factors}
 
     for i, factor in enumerate(factors):
@@ -192,7 +193,7 @@ def cov_factor(X, Y):
 
         cov = np.corrcoef(x, y, rowvar=False, bias=False)
 
-        cov = np.where(cov > 0, 1 - cov, -1 - cov)
+        cov = np.where(cov > 0, 1 - cov, -1 - cov) # 1 FoV is encoded, 0 FoV is not encoded
 
         cov = np.abs(cov)
 
@@ -206,7 +207,7 @@ def cov_factor(X, Y):
     return covs, factors
 
 
-def representation_info(X, Y, representation, alpha=0.5, gamma=False):
+def representation_info(X, Y, representation, alpha=0.5, gamma = "avg"):
     '''
     Given X and Y representations to which an intevertion has been applied according to the factor classes.
     Get info about representation.
@@ -228,7 +229,7 @@ def representation_info(X, Y, representation, alpha=0.5, gamma=False):
 
 
 
-def get_score(X, Y, representation, alpha=0.5, gamma = False):
+def get_score(X, Y, representation, alpha=0.5, gamma = "avg"):
 
     covs, factors = cov_factor(X, Y)
 
@@ -251,7 +252,7 @@ class OMES(Metric):
         super(OMES, self).__init__(**kwargs)
 
         self.alpha_list = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 1.0, 0.0]  # parameter for my metric
-        self.gamma_list = [False, True]
+        self.pooling_list = ["max", "avg"]
 
         self.representation = np.load(self.representation_path + ".npz")[mode]
 
@@ -283,12 +284,12 @@ class OMES(Metric):
         Y = np.load(self.y_path)
 
         alpha_scores = {}
-        for gamma in self.gamma_list:
+        for pooling in self.pooling_list:
 
-            alpha_scores[gamma] = {}
+            alpha_scores[pooling] = {}
             for alpha in self.alpha_list:
-                score, inactive, association, cov, _ = get_score(X, Y, self.representation, alpha=alpha, gamma=gamma)
-                alpha_scores[gamma][alpha] = score
+                score, inactive, association, cov, _ = get_score(X, Y, self.representation, alpha=alpha, gamma=pooling)
+                alpha_scores[pooling][alpha] = score
 
         # save association factor --> dimesions
         current_dir, _ = os.path.split(self.classes_path)
@@ -319,10 +320,10 @@ class OMESFactors(OMES):
         Y = np.load(self.y_path)
 
         alpha_scores = {}
-        for gamma in self.gamma_list:
+        for pooling in self.pooling_list:
 
-            alpha_scores[gamma] = {}
+            alpha_scores[pooling] = {}
             for alpha in self.alpha_list:
-                _, _, _, _, factors_score = get_score(X, Y, self.representation, alpha=alpha, gamma=gamma)
-                alpha_scores[gamma][alpha] = factors_score
+                _, _, _, _, factors_score = get_score(X, Y, self.representation, alpha=alpha, gamma=pooling)
+                alpha_scores[pooling][alpha] = factors_score
         return alpha_scores

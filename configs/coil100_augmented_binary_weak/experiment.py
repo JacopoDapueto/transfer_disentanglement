@@ -32,7 +32,7 @@ def get_datasets():
     multithread = h.fixed("multithread", True)
     resize = h.fixed("resize", 64)
     center_crop = h.fixed("center_crop", None)
-    decoder_distribution = h.fixed("decoder_distribution", "mssim") # gaussian , continuos_bernoulli , cross-entropy
+    decoder_distribution = h.fixed("decoder_distribution", "cross-entropy") # gaussian , continuos_bernoulli , cross-entropy
     config_gaussian = h.zipit([dataset_name, decoder_distribution, multithread,resize, center_crop ])
 
     return h.chainit([config_gaussian])
@@ -54,7 +54,7 @@ def get_default_models():
     betas = h.sweep("beta", h.discrete([1., 2.]))
 
 
-    warm_up = h.fixed("warm_up_iterations", 0) # 50000
+    warm_up = h.fixed("warm_up_iterations", 50000) # 50000
 
     config_beta_vae = h.zipit([model_name, betas,filters, warm_up])
 

@@ -9,7 +9,7 @@ import shutil
 
 from absl import app
 from absl import flags
-from config.named_experiment import get_named_experiment
+from configs.named_experiment import get_named_experiment
 from src.evaluation.eval_representation import evaluation_model
 from src.postprocessing.postprocess import postprocess_model
 from src.traininig.train import train_model
