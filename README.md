@@ -30,6 +30,11 @@ export DISENTANGLEMENT_TRANSFER_DATA=<path to the data directory>
 python create_coil100_augmented/augment_coil100.py
 ```
 ## OMES usage
+The code requires `representations.npz` and `classes.csv` to contain the representation and the labels of the FoVs of random samples. Both files are in the same directory <path to representation>
+
+```
+python compute_omes.py --representation_directory <path to representation>
+```
 
 
 ## How to reproduce Transfer experiments
