@@ -80,4 +80,9 @@ If you have any questions, you are very welcome to email jacopo.dapueto@gmail.co
 If you find this useful for your research and applications, please cite using this BibTeX:
 
 ```BibTeX
-
+@article{dapueto2024transferring,
+  title={Transferring disentangled representations: bridging the gap between synthetic and real images},
+  author={Dapueto, Jacopo and Noceti, Nicoletta and Odone, Francesca},
+  journal={arXiv preprint arXiv:2409.18017},
+  year={2024}
+}
