@@ -82,7 +82,9 @@ python dlib_compare_transfer.py --experiment experiment_name --values_to_aggrega
 ## Contacts
 If you have any questions, you are very welcome to email jacopo.dapueto@gmail.com
 
-## Bibtex
+## License
+
+## Bibtex citation
 If you find this useful for your research and applications, please cite using this BibTeX:
 
 ```BibTeX
