@@ -2,9 +2,8 @@
 [[Paper](https://arxiv.org/abs/2409.18017)]
 
 ---
-
-## 🔧 Dependencies and Installation
-### Install dependencies
+## ⚙ Installation
+### Prerequisites
 The code was developed and tested with Python 3.10 and the main dependencies are [Pytorch == 2.0.0 ](https://pytorch.org/) and [Cuda==11.7](https://developer.nvidia.com/cuda-toolkit)
 
 Set up the environment and then install the dependencies with
@@ -29,7 +28,7 @@ export DISENTANGLEMENT_TRANSFER_DATA=<path to the data directory>
 ```
 python create_coil100_augmented/augment_coil100.py
 ```
-## OMES usage
+## 🚀 OMES usage
 The code requires `representations.npz` and `classes.csv` to contain the representation and the labels of the FoVs of random samples. Both files are in the same directory, [example folder](example) contains an example of the required files.
 
 Run the following script to compute OMES:
@@ -38,7 +37,7 @@ python compute_omes.py --representation_directory <path to representation>
 ```
 
 
-## How to reproduce Transfer experiments
+## 📊 How to reproduce Transfer experiments
 
 To reproduce the experiment of the study use the scripts in the folder 
 ```
@@ -79,12 +78,12 @@ python dlib_aggregate_results_transfer_experiment.py --experiment experiment_nam
 python dlib_compare_transfer.py --experiment experiment_name --values_to_aggregate "model_num"
 ```
 
-## Contacts
+## 📧 Contacts
 If you have any questions, you are very welcome to email jacopo.dapueto@gmail.com
 
-## License
+## 📄 License
 
-## Bibtex citation
+## 📚 Bibtex citation
 If you find this useful for your research and applications, please cite using this BibTeX:
 
 ```BibTeX
