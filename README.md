@@ -113,7 +113,7 @@ If you have any questions, you are very welcome to email jacopo.dapueto@gmail.co
 ## 📄 License
 
 ## 📚 Bibtex citation
-If you find this useful for your research and applications, please cite using this BibTeX:
+If you use our dataset or code, please give the repository a star ⭐ and cite our paper:
 
 ```BibTeX
 @article{dapueto2024transferring,
