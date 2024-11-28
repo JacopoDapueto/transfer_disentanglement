@@ -31,10 +31,13 @@ python create_coil100_augmented/augment_coil100.py
 ## 🚀 OMES usage
 The code requires `representations.npz` and `classes.csv` to contain the representation and the labels of the FoVs of random samples. Both files are in the same directory, [example folder](example) contains an example of the required files.
 
-Run the following script to compute the averaged OMES score over the FoVs:
+Run the following script to compute the **averaged OMES** score over the FoVs:
 ```
-representation_path = os.path.join(<path to representation>, "representations") # path to representation without .npz extension
-classes_path = os.path.join(<path to representation>, "classes") # path to FoVs labels without .csv extension
+# path to representation without .npz extension
+representation_path = os.path.join(<path to representation>, "representations")
+
+ # path to FoVs labels without .csv extension
+classes_path = os.path.join(<path to representation>, "classes")
 
 
 mode = "mean" # representation modality: mu of sampled points of the VAE encoder.
@@ -46,7 +49,7 @@ with open(os.path.join(representation_path, 'omes.json'), 'w') as fp:
      json.dump(dict_score, fp)
 ```
 
-Or for the a separated OMES score for each FoV run:
+Or for the **separated OMES** score for each FoV run:
 ```
 # Score separated for each FoV
 metric_mode = OMESFactors(mode=mode, representation_path=representation_path, classes_path=classes_path)
