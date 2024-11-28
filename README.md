@@ -1,5 +1,10 @@
 # Transferring disentangled representations: bridging the gap between synthetic and real images
-[[Paper](https://arxiv.org/abs/2409.18017)]
+
+Code and scripts for "Transferring disentangled representations: bridging the gap between synthetic and real images"
+
+To appear in [the 38th Annual Conference on Neural Information Processing Systems (NeurIPS) 2024](https://neurips.cc/Conferences/2024)
+
+[[ArXiv preprint📃](https://arxiv.org/abs/2409.18017)]
 
 ---
 ## ⚙ Installation
