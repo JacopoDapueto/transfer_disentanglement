@@ -57,7 +57,6 @@ dict_score = metric_mode.get_score()
 
 with open(os.path.join(representation_path, 'omes_factors.json'), 'w') as fp:
      json.dump(dict_score, fp)
-
 ```
 
 
