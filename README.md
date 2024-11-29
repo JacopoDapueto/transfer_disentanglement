@@ -31,7 +31,7 @@ export DISENTANGLEMENT_TRANSFER_DATA=<path to the data directory>
 ```
 3. Unzip the compressed files (Coil100 and RGDB Objects)
 
-4. Create the augmented and binary version of Coil100 with the command
+4. Create the augmented and binary version of Coil100 with the command. **Otherwise** download augmented Coil100 from [HuggingFace🤗](https://huggingface.co/datasets/dappu97/Coil100-Augmented)
 ```
 python create_coil100_augmented/augment_coil100.py
 ```
