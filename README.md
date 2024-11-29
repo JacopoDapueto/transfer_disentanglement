@@ -4,7 +4,7 @@ Code and scripts for "Transferring disentangled representations: bridging the ga
 
 To appear in [the 38th Annual Conference on Neural Information Processing Systems (NeurIPS) 2024](https://neurips.cc/Conferences/2024)
 
-[[ArXiv preprint📃](https://arxiv.org/abs/2409.18017)] [![image](https://github.com/user-attachments/assets/e64fe33a-3347-4126-aa58-944823ca0e9f)] 
+[[ArXiv preprint📃](https://arxiv.org/abs/2409.18017)] [Dataset🤗] 
 
 
 
