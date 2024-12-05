@@ -112,8 +112,6 @@ python dlib_compare_transfer.py --experiment experiment_name --values_to_aggrega
 ## 📧 Contacts
 If you have any questions, you are very welcome to email jacopo.dapueto@gmail.com
 
-## 📄 License
-
 ## 📚 Bibtex citation
 If you use our dataset or code, please give the repository a star ⭐ and cite our paper:
 
