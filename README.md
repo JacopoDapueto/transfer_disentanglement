@@ -76,7 +76,19 @@ from src.traininig.fine_tune import train_model as finetune_model
 from src.postprocessing.postprocess import postprocess_model
 
  # train source model
-config_source = {}
+config_source = {"dataset": "", # name of the source dataset
+                 "latent_dim": 10, # number of latent dimensions
+                 "random_seed": 42
+                 "method" : "",
+                 "n_filters": 128,
+                 "beta": , # VAE regularize 
+                 "warm_up_iterations":,
+                 "batch_size": "",
+                 "lr": ,
+                 "wd": , # weight decay
+                 "iterations": , # iterations to train the model
+                 "factor_idx": , # list of the FoVs to train the model on
+}
 output_directory = <path where to save source model>
 train_model(output_directory, config_source)
 postprocess_model(output_directory, postprocessing_config)
