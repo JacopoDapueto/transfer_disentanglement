@@ -68,37 +68,8 @@ with open(os.path.join(representation_path, 'omes_factors.json'), 'w') as fp:
 
 ## 🚀 Train and transfer your model
 
-Code to train and transfer a single model:
-```
-from src.traininig.train_weak import train_model
-from src.traininig.fine_tune import train_model as finetune_model
+For the code to train and transfer a single model see [train_and_transfer_model.py](./train_and_transfer_model.py)
 
-from src.postprocessing.postprocess import postprocess_model
-
- # train source model
-config_source = {"dataset": "", # name of the source dataset
-                 "latent_dim": 10, # number of latent dimensions
-                 "random_seed": 42
-                 "method" : "",
-                 "n_filters": 128,
-                 "beta": , # VAE regularize 
-                 "warm_up_iterations":,
-                 "batch_size": "",
-                 "lr": ,
-                 "wd": , # weight decay
-                 "iterations": , # iterations to train the model
-                 "factor_idx": , # list of the FoVs to train the model on
-}
-output_directory = <path where to save source model>
-train_model(output_directory, config_source)
-postprocess_model(output_directory, postprocessing_config)
-
-# transfer to target model
-config_transfer = {}
-output_target_directory = <path where to save transferred model>
-finetune_model(output_target_directory, config_transfer)  # finetune target model
-postprocess_model(output_target_directory, config_transfer) # extract representation to evaluate
-```
 ## 📊 How to reproduce Transfer experiments of the paper
 
 To reproduce the experiment of the study use the scripts in the folder `bash_scripts`
