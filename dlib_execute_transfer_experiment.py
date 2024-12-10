@@ -163,7 +163,6 @@ def main(unused_args):
     # extract and save representation
     postprocess_model(post_output_directory, postprocessing_config)
 
-
     # save all visualizations
     visualize_model(post_output_directory, postprocessing_config)
 

@@ -1,4 +1,4 @@
-"""Script to run the training protocol."""
+"""Script to run the training protocol of the Source model with weak supervision (Ada-GVAE)."""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
