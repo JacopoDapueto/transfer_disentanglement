@@ -87,7 +87,7 @@ finetune_model(output_target_directory, config_transfer)
 
 
 ```
-## 📊 How to reproduce Transfer experiments
+## 📊 How to reproduce Transfer experiments of the paper
 
 To reproduce the experiment of the study use the scripts in the folder 
 ```
