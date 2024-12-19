@@ -91,9 +91,9 @@ Only Target:
 
 <details>
 
-## <summary>  📊 How to reproduce Transfer experiments of the paper</summary>
+## 📊 How to reproduce Transfer experiments of the paper
 
-
+<summary>  </summary>
 
 To reproduce the experiment of the study use the scripts in the folder `bash_scripts`
 
