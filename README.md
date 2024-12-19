@@ -89,7 +89,11 @@ Only Target:
 
 </details>
 
-## 📊 How to reproduce Transfer experiments of the paper
+<details>
+
+<summary>## 📊 How to reproduce Transfer experiments of the paper</summary>
+
+
 
 To reproduce the experiment of the study use the scripts in the folder `bash_scripts`
 
@@ -126,7 +130,7 @@ python dlib_aggregate_results_transfer_experiment.py --experiment experiment_nam
 ```
 python dlib_compare_transfer.py --experiment experiment_name --values_to_aggregate "model_num"
 ```
-
+</details>
 ## 📧 Contacts
 If you have any questions, you are very welcome to email jacopo.dapueto@gmail.com
 
