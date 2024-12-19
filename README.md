@@ -68,7 +68,7 @@ with open(os.path.join(representation_path, 'omes_factors.json'), 'w') as fp:
 
 ## 🚀 Train and transfer your model
 
-For the code to train and transfer a single model see [train_and_transfer_model.py](./train_and_transfer_model.py)
+For the code to train a model on a Source dataset and then transfer to a Target see [train_and_transfer_model.py](./train_and_transfer_model.py)
 
 <details>
 
