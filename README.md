@@ -74,10 +74,18 @@ For the code to train and transfer a single model see [train_and_transfer_model.
 
 <summary>Datasets already available</summary>
 
+Source & Target:
 * dSprites
+* Noisy-dSprites
 * Color-dSprites
-*
+* Noisy-Color-dSprites
+* Shapes3D
+* Isaac3D
+* Coil100
+* Coil100-Augmented
 
+Only Target:
+* RGBD-Objects
 
 </details>
 
