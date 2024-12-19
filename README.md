@@ -70,6 +70,17 @@ with open(os.path.join(representation_path, 'omes_factors.json'), 'w') as fp:
 
 For the code to train and transfer a single model see [train_and_transfer_model.py](./train_and_transfer_model.py)
 
+<details>
+
+<summary>Datasets already available</summary>
+
+* dSprites
+* Color-dSprites
+*
+
+
+</details>
+
 ## 📊 How to reproduce Transfer experiments of the paper
 
 To reproduce the experiment of the study use the scripts in the folder `bash_scripts`
