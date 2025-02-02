@@ -143,6 +143,6 @@ If you use our dataset or code, please give the repository a star ⭐ and cite o
 @article{dapueto2024transferring,
   title={Transferring disentangled representations: bridging the gap between synthetic and real images},
   author={Dapueto, Jacopo and Noceti, Nicoletta and Odone, Francesca},
-  journal={arXiv preprint arXiv:2409.18017},
+  booktitle = {Advances in Neural Information Processing Systems},
   year={2024}
 }
