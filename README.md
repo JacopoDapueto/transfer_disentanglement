@@ -140,9 +140,14 @@ If you have any questions, you are very welcome to email jacopo.dapueto@gmail.co
 If you use our dataset or code, please give the repository a star ⭐ and cite our paper:
 
 ```BibTeX
-@article{dapueto2024transferring,
-  title={Transferring disentangled representations: bridging the gap between synthetic and real images},
-  author={Dapueto, Jacopo and Noceti, Nicoletta and Odone, Francesca},
-  booktitle = {Advances in Neural Information Processing Systems},
-  year={2024}
+@inproceedings{NEURIPS2024_26d01e5e,
+ author = {Dapueto, Jacopo and Noceti, Nicoletta and Odone, Francesca},
+ booktitle = {Advances in Neural Information Processing Systems},
+ editor = {A. Globerson and L. Mackey and D. Belgrave and A. Fan and U. Paquet and J. Tomczak and C. Zhang},
+ pages = {21912--21948},
+ publisher = {Curran Associates, Inc.},
+ title = {Transferring disentangled representations: bridging the gap between synthetic and real images},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2024/file/26d01e5ed42d8dcedd6aa0e3e99cffc4-Paper-Conference.pdf},
+ volume = {37},
+ year = {2024}
 }
