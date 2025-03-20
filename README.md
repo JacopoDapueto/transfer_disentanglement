@@ -1,6 +1,7 @@
 # Transferring disentangled representations: bridging the gap between synthetic and real images
 
  [Jacopo Dapueto](https://jacopodapueto.github.io/) [Nicoletta Noceti](https://scholar.google.it/citations?user=7i3HX4wAAAAJ&hl=en) [Francesca Odone](https://scholar.google.com/citations?user=riK7DscAAAAJ&hl=en) 
+ 
 Code and scripts for "Transferring disentangled representations: bridging the gap between synthetic and real images"
 
 To appear in [the 38th Annual Conference on Neural Information Processing Systems (NeurIPS) 2024](https://neurips.cc/Conferences/2024)
