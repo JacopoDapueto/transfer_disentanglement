@@ -1,6 +1,6 @@
 # Transferring disentangled representations: bridging the gap between synthetic and real images
  
-This is the official code repository for the paper **"Transferring disentangled representations: bridging the gap between synthetic and real images"** ([NeurIPS 2024](https://neurips.cc/Conferences/2024)) Jacopo Dapueto, Nicoletta Noceti, Francesca Odone
+This is the official code repository for the paper **"Transferring disentangled representations: bridging the gap between synthetic and real images"** ([NeurIPS 2024](https://neurips.cc/Conferences/2024)) Jacopo Dapueto, Nicoletta Noceti and Francesca Odone
 
 [[ArXiv preprint📃](https://arxiv.org/abs/2409.18017)] [[Dataset🤗](https://huggingface.co/datasets/dappu97/Coil100-Augmented)]
 
