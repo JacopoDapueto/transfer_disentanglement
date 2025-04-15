@@ -77,7 +77,7 @@ Source & Target:
 * Noisy-dSprites
 * Color-dSprites
 * Noisy-Color-dSprites
-* Texture-dSprites $${\color{red}NEW}$$  (Source dataset for ["Disentangled representation of microscopy images"](https://github.com/JacopoDapueto/disentangled_plankton))
+* Texture-dSprites $${\color{red}NEW:}$$ Source dataset for ["Disentangled representation of microscopy images"](https://github.com/JacopoDapueto/disentangled_plankton)
 * Shapes3D
 * Isaac3D
 * Coil100
@@ -89,7 +89,7 @@ Only Target:
 </details>
 
 
-## 📊 How to reproduce Transfer experiments of the paper
+## 📊 How to reproduce the Transfer experiments of the paper
 
 <details>
 
@@ -122,7 +122,7 @@ bash ./bash_scripts/transfer_*.sh
 The results will be saved in `./outuput` directory, organized by experiment name:
 *source_experiment*\_to\_*target_experiment*
 
-**Once** one experiment folder is completed aggregate the results of all random seeds with the scripts
+**Once** one experiment folder is completed, aggregate the results of all random seeds with the scripts
 ```
 python dlib_aggregate_results_transfer_experiment.py --experiment experiment_name 
 ```
