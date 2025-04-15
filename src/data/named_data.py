@@ -12,6 +12,7 @@ from src.data.datasets.dsprites import WhiteColorDSprites
 from src.data.datasets.rgbd_objects import RGBDObjects
 from src.data.datasets.rgbd_objects import RGBDObjectsDepth
 from src.data.datasets.shapes3d import Shapes3D
+from src.data.datasets.texture_dsprites import TextureDSprites
 
 
 def get_named_data(name):
@@ -21,6 +22,9 @@ def get_named_data(name):
 
     if name == "noisy-dsprites":
         return NoisyDSprites
+
+    if name == "texture-dsprites":
+        return TextureDSprites
 
     if name == "3dshapes":
         return Shapes3D
