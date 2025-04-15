@@ -77,7 +77,7 @@ Source & Target:
 * Noisy-dSprites
 * Color-dSprites
 * Noisy-Color-dSprites
-* Texture-dSprites $${\color{red}**NEW**}$$
+* Texture-dSprites $${\color{red}NEW}$$
 * Shapes3D
 * Isaac3D
 * Coil100
