@@ -1,8 +1,6 @@
 # Transferring disentangled representations: bridging the gap between synthetic and real images
-
-Code and scripts for "Transferring disentangled representations: bridging the gap between synthetic and real images"
-
-To appear in [the 38th Annual Conference on Neural Information Processing Systems (NeurIPS) 2024](https://neurips.cc/Conferences/2024)
+ 
+This is the official code repository for the paper **"Transferring disentangled representations: bridging the gap between synthetic and real images"** ([NeurIPS 2024](https://neurips.cc/Conferences/2024)) Jacopo Dapueto, Nicoletta Noceti and Francesca Odone
 
 [[ArXiv preprint📃](https://arxiv.org/abs/2409.18017)] [[Dataset🤗](https://huggingface.co/datasets/dappu97/Coil100-Augmented)]
 
@@ -31,7 +29,7 @@ export DISENTANGLEMENT_TRANSFER_DATA=<path to the data directory>
 ```
 3. Unzip the compressed files (Coil100 and RGDB Objects)
 
-4. Create the *augmented* and *binary* version of Coil100 with the command. **Otherwise** download augmented Coil100 from [HuggingFace🤗](https://huggingface.co/datasets/dappu97/Coil100-Augmented)
+4. Create the *augmented* and *binary* version of Coil100 with the command. **Otherwise** download them from [HuggingFace🤗](https://huggingface.co/datasets/dappu97/Coil100-Augmented)
 ```
 python create_coil100_augmented/augment_coil100.py
 ```
@@ -68,38 +66,33 @@ with open(os.path.join(representation_path, 'omes_factors.json'), 'w') as fp:
 
 ## 🚀 Train and transfer your model
 
-Code to train and transfer a single model:
-```
-from src.traininig.train_weak import train_model
-from src.traininig.fine_tune import train_model as finetune_model
+For the code to train a model on a Source dataset and then transfer to a Target see [train_and_transfer_model.py](./train_and_transfer_model.py)
 
-from src.postprocessing.postprocess import postprocess_model
+<details>
 
- # train source model
-config_source = {"dataset": "", # name of the source dataset
-                 "latent_dim": 10, # number of latent dimensions
-                 "random_seed": 42
-                 "method" : "",
-                 "n_filters": 128,
-                 "beta": , # VAE regularize 
-                 "warm_up_iterations":,
-                 "batch_size": "",
-                 "lr": ,
-                 "wd": , # weight decay
-                 "iterations": , # iterations to train the model
-                 "factor_idx": , # list of the FoVs to train the model on
-}
-output_directory = <path where to save source model>
-train_model(output_directory, config_source)
-postprocess_model(output_directory, postprocessing_config)
+<summary>Datasets already available</summary>
 
-# transfer to target model
-config_transfer = {}
-output_target_directory = <path where to save transferred model>
-finetune_model(output_target_directory, config_transfer)  # finetune target model
-postprocess_model(output_target_directory, config_transfer) # extract representation to evaluate
-```
+Source & Target:
+* dSprites
+* Noisy-dSprites
+* Color-dSprites
+* Noisy-Color-dSprites
+* Shapes3D
+* Isaac3D
+* Coil100
+* Coil100-Augmented
+
+Only Target:
+* RGBD-Objects
+
+</details>
+
+
 ## 📊 How to reproduce Transfer experiments of the paper
+
+<details>
+
+<summary> Details </summary>
 
 To reproduce the experiment of the study use the scripts in the folder `bash_scripts`
 
@@ -136,6 +129,7 @@ python dlib_aggregate_results_transfer_experiment.py --experiment experiment_nam
 ```
 python dlib_compare_transfer.py --experiment experiment_name --values_to_aggregate "model_num"
 ```
+</details>
 
 ## 📧 Contacts
 If you have any questions, you are very welcome to email jacopo.dapueto@gmail.com
@@ -144,9 +138,14 @@ If you have any questions, you are very welcome to email jacopo.dapueto@gmail.co
 If you use our dataset or code, please give the repository a star ⭐ and cite our paper:
 
 ```BibTeX
-@article{dapueto2024transferring,
-  title={Transferring disentangled representations: bridging the gap between synthetic and real images},
-  author={Dapueto, Jacopo and Noceti, Nicoletta and Odone, Francesca},
-  journal={arXiv preprint arXiv:2409.18017},
-  year={2024}
+@inproceedings{NEURIPS2024_26d01e5e,
+ author = {Dapueto, Jacopo and Noceti, Nicoletta and Odone, Francesca},
+ booktitle = {Advances in Neural Information Processing Systems},
+ editor = {A. Globerson and L. Mackey and D. Belgrave and A. Fan and U. Paquet and J. Tomczak and C. Zhang},
+ pages = {21912--21948},
+ publisher = {Curran Associates, Inc.},
+ title = {Transferring disentangled representations: bridging the gap between synthetic and real images},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2024/file/26d01e5ed42d8dcedd6aa0e3e99cffc4-Paper-Conference.pdf},
+ volume = {37},
+ year = {2024}
 }
