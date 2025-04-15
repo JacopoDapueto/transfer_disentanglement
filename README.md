@@ -77,7 +77,7 @@ Source & Target:
 * Noisy-dSprites
 * Color-dSprites
 * Noisy-Color-dSprites
-* Texture-dSprites **$${\color{red}NEW}$$**
+* Texture-dSprites $${\b \color{red}NEW}$$  (Source dataset for ["Disentangled representation of microscopy images"](https://github.com/JacopoDapueto/disentangled_plankton))
 * Shapes3D
 * Isaac3D
 * Coil100
